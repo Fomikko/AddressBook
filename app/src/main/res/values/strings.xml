@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">Address Book</string>
+    <string name="app_name">Адресная книга</string>
+    <string name="error_message">Если результат не получен, попытайтесь снова.</string>
 </resources>
