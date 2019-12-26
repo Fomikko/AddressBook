@@ -1,4 +1,4 @@
-package com.taxtelecom.arinamurasheva.addressbook.main;
+package com.taxtelecom.arinamurasheva.addressbook.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;

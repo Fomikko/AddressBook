@@ -1,21 +1,26 @@
 package com.taxtelecom.arinamurasheva.addressbook;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.taxtelecom.arinamurasheva.addressbook.utilities.AddressBookJsonUtils;
 import com.taxtelecom.arinamurasheva.addressbook.utilities.NetworkUtils;
 
-import java.io.IOException;
 import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
 
-    private TextView mContactListTextView;
+    private RecyclerView mRecyclerView;
+
+    private AddressBookAdapter mAddressBookAdapter;
 
     private TextView mErrorMessageDisplay;
 
@@ -25,31 +30,44 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mContactListTextView = findViewById(R.id.contact_list_display);
 
+        mRecyclerView = findViewById(R.id.recyclerview_address_book);
+
+        /*Это текстовое поле используется для отображения ошибок и будет спрятано, если ошибок нет.*/
         mErrorMessageDisplay = findViewById(R.id.tv_error_message_display);
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        mRecyclerView.setLayoutManager(layoutManager);
+        mRecyclerView.setHasFixedSize(true);
+
+        mAddressBookAdapter = new AddressBookAdapter();
+
+        mRecyclerView.setAdapter(mAddressBookAdapter);
 
         mLoadingIndicator = findViewById(R.id.pb_loading_indicator);
 
-        makeContactListQuery();
+        loadContactData();
+
     }
 
-    private void makeContactListQuery() {
-        URL contactListSearchUrl = NetworkUtils.buildUrl("test_user", "test_pass");
-        new TaxtelecomQueryTask().execute(contactListSearchUrl);
+    private void loadContactData() {
+        showContactDataView();
+
+        String[] userData = {"test_user", "test_pass"};
+        new FetchContactsTask().execute(userData);
     }
 
-    private void showJsonDataView() {
+    private void showContactDataView() {
         mErrorMessageDisplay.setVisibility(View.INVISIBLE);
-        mContactListTextView.setVisibility(View.VISIBLE);
+        mRecyclerView.setVisibility(View.VISIBLE);
     }
 
     private void showErrorMessage() {
         mErrorMessageDisplay.setVisibility(View.VISIBLE);
-        mContactListTextView.setVisibility(View.INVISIBLE);
+        mRecyclerView.setVisibility(View.INVISIBLE);
     }
 
-    public class TaxtelecomQueryTask extends AsyncTask<URL, Void, String> {
+    public class FetchContactsTask extends AsyncTask<String, Void, String[]> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -57,27 +75,38 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onPostExecute(String contactsSearchResults) {
+        protected void onPostExecute(String[] contactData) {
             mLoadingIndicator.setVisibility(View.INVISIBLE);
-            if (contactsSearchResults != null && !contactsSearchResults.equals("")) {
-                mContactListTextView.setText(contactsSearchResults);
-                showJsonDataView();
+            if (contactData != null) {
+                showContactDataView();
+                mAddressBookAdapter.setContactData(contactData);
             } else {
                 showErrorMessage();
             }
         }
 
         @Override
-        protected String doInBackground(URL... params) {
-            URL searchUrl = params[0];
-            String contactsSearchResults = null;
-            try {
-                contactsSearchResults = NetworkUtils.getResponseFromHttp(searchUrl);
-            } catch (IOException e) {
-                e.printStackTrace();
+        protected String[] doInBackground(String... params) {
+            if (params.length == 0) {
+                return null;
             }
 
-            return contactsSearchResults;
+            String login = params[0];
+            String password = params[1];
+
+            URL AddressBookRequestUrl = NetworkUtils.buildUrl(login, password);
+
+            try {
+                String contactsSearchResults = NetworkUtils.getResponseFromHttp(AddressBookRequestUrl);
+                String[] simpleJsonWeatherData = AddressBookJsonUtils.getContactStringsFromJson(MainActivity.this, contactsSearchResults);
+
+                return simpleJsonWeatherData;
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+
         }
     }
 
