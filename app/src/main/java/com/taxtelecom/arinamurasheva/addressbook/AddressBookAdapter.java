@@ -9,20 +9,23 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class AddressBookAdapter extends RecyclerView.Adapter<AddressBookAdapter.AddressBookAdapterViewHolder> {
 
-    private String[] mContactData;
+    private List<ItemsGroup> mContactList = new ArrayList<>();
 
     public AddressBookAdapter() {
 
     }
 
     public class AddressBookAdapterViewHolder extends RecyclerView.ViewHolder {
-        public final TextView mContactTextView;
+        public final TextView mDeptTextView;
 
         public AddressBookAdapterViewHolder(View view) {
             super(view);
-            mContactTextView = view.findViewById(R.id.tv_contact_data);
+            mDeptTextView = view.findViewById(R.id.tv_dept_name);
         }
 
     }
@@ -39,24 +42,50 @@ public class AddressBookAdapter extends RecyclerView.Adapter<AddressBookAdapter.
         return new AddressBookAdapterViewHolder(view);
     }
 
+    private List<?> getFlatItemsList() {
+        List<Object> items = new ArrayList<>();
+
+        for (ItemsGroup item : mContactList) {
+            items.add(item);
+            if (item.isExpanded()) {
+                items.addAll(item.getItems());
+            }
+        }
+
+        return items;
+    }
+
     @Override
     public int getItemCount() {
-        if (mContactData == null) {
-            return 0;
-        }
-        return mContactData.length;
+        return getFlatItemsList().size();
     }
 
     @Override
     public void onBindViewHolder(@NonNull AddressBookAdapterViewHolder holder, int position) {
-        String contactListItemData = mContactData[position];
-        holder.mContactTextView.setText(contactListItemData);
-
-
+        ItemsGroup contactListItemData = mContactList.get(position);
+        holder.mDeptTextView.setText(contactListItemData.getName());
     }
 
-    public void setContactData(String[] contactData) {
-        mContactData = contactData;
+    public void setContactListData(List<String> deptsList) {
+
+        List<ItemsGroup> result = new ArrayList<>(deptsList.size());
+
+        for (String item : deptsList) {
+            result.add(new ItemsGroup(item));
+        }
+
+        mContactList = result;
         notifyDataSetChanged();
+    }
+
+    private void OnHeaderClicked(ItemsGroup header) {
+        int index = getFlatItemsList().indexOf(header);
+        if (header.isExpanded()) {
+            header.collapse();
+            notifyItemRangeRemoved(index + 1, header.getItems().size());
+        } else {
+            header.expand();
+            notifyItemRangeInserted(index + 1, header.getItems().size());
+        }
     }
 }

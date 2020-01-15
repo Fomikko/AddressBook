@@ -42,9 +42,8 @@ public class NetworkUtils {
     /**
      * This method returns the entire result from the HTTP response.
      *
-     * @param url The URL to fetch the HTTP response from.
-     * @return The contents of the HTTP response.
-     * @throws IOException Related to network and stream reading
+     * @param url URL, откуда нужно получить ответ.
+     * @return Содержание ответа HTTP.
      */
     public static String getResponseFromHttp(URL url) throws IOException {
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();

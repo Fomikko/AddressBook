@@ -7,7 +7,7 @@ public class Person {
     String title;
     String email;
     String phone;
-    String department;
+    Department department;
 
     public String getId() {
         return id;
@@ -49,11 +49,11 @@ public class Person {
         this.phone = phone;
     }
 
-    public String getDepartment() {
+    public Department getDepartment() {
         return department;
     }
 
-    public void setDepartment(String department) {
+    public void setDepartment(Department department) {
         this.department = department;
     }
 }

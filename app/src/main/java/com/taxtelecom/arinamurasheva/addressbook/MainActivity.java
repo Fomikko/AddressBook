@@ -6,15 +6,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.taxtelecom.arinamurasheva.addressbook.model.Department;
 import com.taxtelecom.arinamurasheva.addressbook.utilities.AddressBookJsonUtils;
 import com.taxtelecom.arinamurasheva.addressbook.utilities.NetworkUtils;
 
+import java.lang.reflect.Array;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -46,11 +49,11 @@ public class MainActivity extends AppCompatActivity {
 
         mLoadingIndicator = findViewById(R.id.pb_loading_indicator);
 
-        loadContactData();
+        loadDeptsList();
 
-    }
+   }
 
-    private void loadContactData() {
+    private void loadDeptsList() {
         showContactDataView();
 
         String[] userData = {"test_user", "test_pass"};
@@ -67,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setVisibility(View.INVISIBLE);
     }
 
-    public class FetchContactsTask extends AsyncTask<String, Void, String[]> {
+    public class FetchContactsTask extends AsyncTask<String, Void, List<String>> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -75,18 +78,18 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onPostExecute(String[] contactData) {
+        protected void onPostExecute(List<String> deptsList) {
             mLoadingIndicator.setVisibility(View.INVISIBLE);
-            if (contactData != null) {
+            if (deptsList != null) {
                 showContactDataView();
-                mAddressBookAdapter.setContactData(contactData);
+                mAddressBookAdapter.setContactListData(deptsList);
             } else {
                 showErrorMessage();
             }
         }
 
         @Override
-        protected String[] doInBackground(String... params) {
+        protected List<String> doInBackground(String... params) {
             if (params.length == 0) {
                 return null;
             }
@@ -98,15 +101,19 @@ public class MainActivity extends AppCompatActivity {
 
             try {
                 String contactsSearchResults = NetworkUtils.getResponseFromHttp(AddressBookRequestUrl);
-                String[] simpleJsonWeatherData = AddressBookJsonUtils.getContactStringsFromJson(MainActivity.this, contactsSearchResults);
+                List<ItemsGroup> simpleJsonDepartmentsList = AddressBookJsonUtils.getDeptsFromJson(contactsSearchResults);
 
-                return simpleJsonWeatherData;
+                List<String> contactList = new ArrayList<>();
+                for (ItemsGroup item : simpleJsonDepartmentsList) {
+                    contactList.add(item.getName());
+                }
+
+                return contactList;
 
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;
             }
-
         }
     }
 
