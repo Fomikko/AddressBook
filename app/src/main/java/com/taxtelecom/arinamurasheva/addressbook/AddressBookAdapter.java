@@ -9,12 +9,15 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.taxtelecom.arinamurasheva.addressbook.model.Department;
+import com.taxtelecom.arinamurasheva.addressbook.model.Person;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class AddressBookAdapter extends RecyclerView.Adapter<AddressBookAdapter.AddressBookAdapterViewHolder> {
 
-    private List<ItemsGroup> mContactList = new ArrayList<>();
+    private List<Item> mContactList;
 
     public AddressBookAdapter() {
 
@@ -42,13 +45,17 @@ public class AddressBookAdapter extends RecyclerView.Adapter<AddressBookAdapter.
         return new AddressBookAdapterViewHolder(view);
     }
 
-    private List<?> getFlatItemsList() {
-        List<Object> items = new ArrayList<>();
+    private List<Item> getFlatItemsList() {
 
-        for (ItemsGroup item : mContactList) {
+        List<Item> items = new ArrayList<>();
+
+        for (Item item : mContactList) {
             items.add(item);
-            if (item.isExpanded()) {
-                items.addAll(item.getItems());
+
+            List<Item> innerItems;
+
+            if (item.isExpanded() && (innerItems = item.getItems()) != null) {
+                items.addAll(innerItems);
             }
         }
 
@@ -57,35 +64,96 @@ public class AddressBookAdapter extends RecyclerView.Adapter<AddressBookAdapter.
 
     @Override
     public int getItemCount() {
-        return getFlatItemsList().size();
+        try {
+            return getFlatItemsList().size();
+        } catch (NullPointerException e) {
+            return 0;
+        }
     }
 
     @Override
     public void onBindViewHolder(@NonNull AddressBookAdapterViewHolder holder, int position) {
-        ItemsGroup contactListItemData = mContactList.get(position);
-        holder.mDeptTextView.setText(contactListItemData.getName());
+
+        mContactList = getFlatItemsList();
+
+        final Item contactListItemData = mContactList.get(position);
+
+        View.OnClickListener headerListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onHeaderClicked(contactListItemData);
+            }
+        };
+
+        holder.mDeptTextView.setOnClickListener(headerListener);
+        holder.mDeptTextView.setText(contactListItemData.toString());
+
     }
 
-    public void setContactListData(List<String> deptsList) {
+    /*Метод адаптирует список отделов для отображения на экране в виде раскрывающегося списка.*/
+    public void setContactListData(List<Item> itemsList) {
 
-        List<ItemsGroup> result = new ArrayList<>(deptsList.size());
+        mContactList = itemsList;
+        notifyDataSetChanged();
 
-        for (String item : deptsList) {
-            result.add(new ItemsGroup(item));
+    }
+
+    public static List<Item> deptsToItemsList(List<Department> deptsList) {
+
+        int numOfItems = deptsList.size();
+        List<Item> result = new ArrayList<>(numOfItems);
+
+        for (int i = 0; i < numOfItems; i++) {
+            Department dept = deptsList.get(i);
+
+            Item item = new Item(dept.getName());
+
+            List<Department> innerDepts;
+            List<Person> personsList;
+
+            if ((innerDepts = dept.getDepartments()) != null) {
+
+                item.setItems(deptsToItemsList(innerDepts));
+
+            }/* else if ((personsList = dept.getEmployees()) != null) {
+
+                List<Item> itemList = deptsToItemsList(personsList);
+                item.setItems(personsList);
+
+            }*/
+
+            result.add(item);
         }
 
-        mContactList = result;
-        notifyDataSetChanged();
+        //printItemsList(result);
+        return result;
     }
 
-    private void OnHeaderClicked(ItemsGroup header) {
+    private void onHeaderClicked(Item header) {
+
         int index = getFlatItemsList().indexOf(header);
+
         if (header.isExpanded()) {
             header.collapse();
             notifyItemRangeRemoved(index + 1, header.getItems().size());
+
         } else {
-            header.expand();
-            notifyItemRangeInserted(index + 1, header.getItems().size());
+            if (header.getItems() != null) {
+                header.expand();
+                notifyItemRangeInserted(index + 1, header.getItems().size());
+            }
+        }
+    }
+
+    public static void printItemsList(List<Item> itemsList) {
+        for (Item item : itemsList) {
+            System.out.println(item.getName());
+
+            List<Item> innerItems;
+            if ((innerItems = item.getItems()) != null) {
+                System.out.println("SubItems of " + item.getName());
+                printItemsList(innerItems);
+            }
         }
     }
 }

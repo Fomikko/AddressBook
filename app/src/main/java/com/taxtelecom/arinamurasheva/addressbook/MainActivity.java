@@ -11,13 +11,23 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.taxtelecom.arinamurasheva.addressbook.model.Department;
-import com.taxtelecom.arinamurasheva.addressbook.utilities.AddressBookJsonUtils;
 import com.taxtelecom.arinamurasheva.addressbook.utilities.NetworkUtils;
+import com.taxtelecom.arinamurasheva.addressbook.utilities.ParserFromJsonUtils;
 
-import java.lang.reflect.Array;
-import java.net.URL;
-import java.util.ArrayList;
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+
+import java.io.IOException;
 import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
+import static com.taxtelecom.arinamurasheva.addressbook.utilities.ParserFromJsonUtils.parseFromJson;
+import static com.taxtelecom.arinamurasheva.addressbook.utilities.ParserFromJsonUtils.printDeptsList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -49,15 +59,76 @@ public class MainActivity extends AppCompatActivity {
 
         mLoadingIndicator = findViewById(R.id.pb_loading_indicator);
 
-        loadDeptsList();
+        mLoadingIndicator.setVisibility(View.VISIBLE);
+
+        String login = "test_user";
+        String password = "test_pass";
+
+        String addressBookRequestUrl = NetworkUtils.buildUrl(login, password);
+
+        try {
+            run(addressBookRequestUrl);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
    }
 
-    private void loadDeptsList() {
-        showContactDataView();
+   void run(String url) throws IOException {
+        OkHttpClient client = new OkHttpClient();
 
-        String[] userData = {"test_user", "test_pass"};
-        new FetchContactsTask().execute(userData);
+           Request request = new Request.Builder()
+                   .url(url)
+                   .build();
+
+           client.newCall(request).enqueue(new Callback() {
+
+               @Override
+               public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+                   /*
+                    * TODO Исправить ошибку. Отключить интернет на телефоне, открыть приложение.
+                    * Only the original thread that created a view hierarchy can touch its views.
+                    */
+
+                   showErrorMessage();
+
+                   call.cancel();
+               }
+
+               @Override
+               public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                   final String responseJsonString = response.body().string();
+
+                   MainActivity.this.runOnUiThread(new Runnable() {
+                       @Override
+                       public void run() {
+
+                           mLoadingIndicator.setVisibility(View.INVISIBLE);
+                           setContactListLayout(responseJsonString);
+
+                       }
+                   });
+               }
+           });
+   }
+
+    private void setContactListLayout(String jsonString) {
+
+        List <Department> deptsList = null;
+        try {
+            deptsList = parseFromJson(jsonString);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        if (deptsList != null) {
+            //printDeptsList(deptsList);
+            showContactDataView();
+            mAddressBookAdapter.setContactListData(AddressBookAdapter.deptsToItemsList(deptsList));
+        } else {
+            showErrorMessage();
+        }
     }
 
     private void showContactDataView() {
@@ -68,53 +139,6 @@ public class MainActivity extends AppCompatActivity {
     private void showErrorMessage() {
         mErrorMessageDisplay.setVisibility(View.VISIBLE);
         mRecyclerView.setVisibility(View.INVISIBLE);
-    }
-
-    public class FetchContactsTask extends AsyncTask<String, Void, List<String>> {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            mLoadingIndicator.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        protected void onPostExecute(List<String> deptsList) {
-            mLoadingIndicator.setVisibility(View.INVISIBLE);
-            if (deptsList != null) {
-                showContactDataView();
-                mAddressBookAdapter.setContactListData(deptsList);
-            } else {
-                showErrorMessage();
-            }
-        }
-
-        @Override
-        protected List<String> doInBackground(String... params) {
-            if (params.length == 0) {
-                return null;
-            }
-
-            String login = params[0];
-            String password = params[1];
-
-            URL AddressBookRequestUrl = NetworkUtils.buildUrl(login, password);
-
-            try {
-                String contactsSearchResults = NetworkUtils.getResponseFromHttp(AddressBookRequestUrl);
-                List<ItemsGroup> simpleJsonDepartmentsList = AddressBookJsonUtils.getDeptsFromJson(contactsSearchResults);
-
-                List<String> contactList = new ArrayList<>();
-                for (ItemsGroup item : simpleJsonDepartmentsList) {
-                    contactList.add(item.getName());
-                }
-
-                return contactList;
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
     }
 
 }

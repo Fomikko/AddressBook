@@ -1,16 +1,21 @@
 package com.taxtelecom.arinamurasheva.addressbook;
 
+import androidx.annotation.NonNull;
+
 import java.util.List;
 
-public class ItemsGroup<T> {
-    private List<T> items;
+public class Item {
 
-    private String name;
+    private List<Item> items;
 
     private boolean expanded;
 
-    public ItemsGroup(String name) {
+    private String name;
+
+    public Item(String name) {
+
         this.name = name;
+
     }
 
     public String getName() {
@@ -21,11 +26,11 @@ public class ItemsGroup<T> {
         this.name = name;
     }
 
-    public List<T> getItems() {
+    public List<Item> getItems() {
         return items;
     }
 
-    public void setItems(List<T> items) {
+    public void setItems(List<Item> items) {
         this.items = items;
     }
 
@@ -39,5 +44,11 @@ public class ItemsGroup<T> {
 
     public void collapse() {
         this.expanded = false;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return this.name;
     }
 }

@@ -1,13 +1,24 @@
 package com.taxtelecom.arinamurasheva.addressbook.model;
 
-public class Person {
+import androidx.annotation.NonNull;
+
+import java.io.Serializable;
+
+public class Person implements Serializable {
 
     String id;
     String name;
     String title;
     String email;
     String phone;
-    Department department;
+
+    public Person(String id, String name, String title, String email, String phone) {
+        this.id = id;
+        this.name = name;
+        this.title = title;
+        this.email = email;
+        this.phone = phone;
+    }
 
     public String getId() {
         return id;
@@ -49,11 +60,9 @@ public class Person {
         this.phone = phone;
     }
 
-    public Department getDepartment() {
-        return department;
-    }
-
-    public void setDepartment(Department department) {
-        this.department = department;
+    @NonNull
+    @Override
+    public String toString() {
+        return name;
     }
 }

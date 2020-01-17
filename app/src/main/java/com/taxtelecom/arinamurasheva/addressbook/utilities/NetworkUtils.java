@@ -25,7 +25,7 @@ public class NetworkUtils {
      * @param taxtelecomPassword Пароль для входа в систему.
      * @return URL, который используется для запроса к серверу.
      */
-    public static URL buildUrl(String taxtelecomLogin, String taxtelecomPassword) {
+    public static String buildUrl(String taxtelecomLogin, String taxtelecomPassword) {
         Uri builtUri = Uri.parse(TAXTELECOM_BASE_URL).buildUpon()
                 .appendQueryParameter(PARAM_LOGIN, taxtelecomLogin)
                 .appendQueryParameter(PARAM_PASSWORD, taxtelecomPassword)
@@ -36,7 +36,7 @@ public class NetworkUtils {
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
-        return url;
+        return url.toString();
     }
 
     /**
@@ -45,7 +45,7 @@ public class NetworkUtils {
      * @param url URL, откуда нужно получить ответ.
      * @return Содержание ответа HTTP.
      */
-    public static String getResponseFromHttp(URL url) throws IOException {
+/*    public static String getResponseFromHttp(URL url) throws IOException {
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
 
         try {
@@ -63,6 +63,6 @@ public class NetworkUtils {
         } finally {
             urlConnection.disconnect();
         }
-    }
+    }*/
 
 }
