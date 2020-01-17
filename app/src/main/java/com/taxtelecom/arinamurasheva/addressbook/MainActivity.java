@@ -115,17 +115,17 @@ public class MainActivity extends AppCompatActivity {
 
     private void setContactListLayout(String jsonString) {
 
-        List <Department> deptsList = null;
+        Department dept = null;
         try {
-            deptsList = parseFromJson(jsonString);
+            dept = parseFromJson(jsonString);
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        if (deptsList != null) {
-            //printDeptsList(deptsList);
+        if (dept != null) {
+            printDeptsList(dept.getDepartments());
             showContactDataView();
-            mAddressBookAdapter.setContactListData(AddressBookAdapter.deptsToItemsList(deptsList));
+            //mAddressBookAdapter.setContactListData(AddressBookAdapter.deptsToItemsList(dept));
         } else {
             showErrorMessage();
         }
