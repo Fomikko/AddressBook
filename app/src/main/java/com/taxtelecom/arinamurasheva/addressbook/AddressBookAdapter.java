@@ -17,7 +17,6 @@ import java.util.List;
 
 public class AddressBookAdapter extends RecyclerView.Adapter<AddressBookAdapter.AddressBookAdapterViewHolder> {
 
-    private List<Item> mContactList;
     private List<Item> backupList;
 
     public AddressBookAdapter() {
@@ -79,8 +78,6 @@ public class AddressBookAdapter extends RecyclerView.Adapter<AddressBookAdapter.
     @Override
     public void onBindViewHolder(@NonNull AddressBookAdapterViewHolder holder, int position) {
 
-        //вот здесь работает
-        //mContactList = getFlatItemsList();
         final Item contactListItemData = getFlatItemsList(backupList).get(position);
 
         View.OnClickListener headerListener = new View.OnClickListener() {
@@ -101,12 +98,12 @@ public class AddressBookAdapter extends RecyclerView.Adapter<AddressBookAdapter.
 
         if (header.isExpanded()) {
             header.collapse();
-            notifyItemRangeRemoved(index + 1, header.getItems().size());
+            notifyItemRangeRemoved(index + 1, getFlatItemsList(header.getItems()).size());
 
         } else {
             if (header.getItems() != null) {
                 header.expand();
-                notifyItemRangeInserted(index + 1, header.getItems().size());
+                notifyItemRangeInserted(index + 1, getFlatItemsList(header.getItems()).size());
             }
         }
     }
