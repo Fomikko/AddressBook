@@ -18,6 +18,7 @@ import java.util.List;
 public class AddressBookAdapter extends RecyclerView.Adapter<AddressBookAdapter.AddressBookAdapterViewHolder> {
 
     private List<Item> mContactList;
+    private List<Item> backupList;
 
     public AddressBookAdapter() {
 
@@ -45,27 +46,31 @@ public class AddressBookAdapter extends RecyclerView.Adapter<AddressBookAdapter.
         return new AddressBookAdapterViewHolder(view);
     }
 
-    private List<Item> getFlatItemsList() {
+    private List<Item> getFlatItemsList(List<Item> nestedItemsList) {
 
-        List<Item> items = new ArrayList<>();
+        List<Item> flatItemsList = new ArrayList<>();
 
-        for (Item item : mContactList) {
-            items.add(item);
+        for (int i = 0; i < nestedItemsList.size(); i++) {
+
+            Item curItem = nestedItemsList.get(i);
+            flatItemsList.add(curItem);
 
             List<Item> innerItems;
 
-            if (item.isExpanded() && (innerItems = item.getItems()) != null) {
-                items.addAll(innerItems);
+            if (curItem.isExpanded() && (innerItems = curItem.getItems()) != null) {
+                flatItemsList.addAll(getFlatItemsList(innerItems));
+
             }
         }
 
-        return items;
+        return flatItemsList;
     }
+
 
     @Override
     public int getItemCount() {
         try {
-            return getFlatItemsList().size();
+            return getFlatItemsList(backupList).size();
         } catch (NullPointerException e) {
             return 0;
         }
@@ -74,9 +79,9 @@ public class AddressBookAdapter extends RecyclerView.Adapter<AddressBookAdapter.
     @Override
     public void onBindViewHolder(@NonNull AddressBookAdapterViewHolder holder, int position) {
 
-        mContactList = getFlatItemsList();
-
-        final Item contactListItemData = mContactList.get(position);
+        //вот здесь работает
+        //mContactList = getFlatItemsList();
+        final Item contactListItemData = getFlatItemsList(backupList).get(position);
 
         View.OnClickListener headerListener = new View.OnClickListener() {
             @Override
@@ -87,51 +92,12 @@ public class AddressBookAdapter extends RecyclerView.Adapter<AddressBookAdapter.
 
         holder.mDeptTextView.setOnClickListener(headerListener);
         holder.mDeptTextView.setText(contactListItemData.toString());
-
     }
 
-    /*Метод адаптирует список отделов для отображения на экране в виде раскрывающегося списка.*/
-    public void setContactListData(List<Item> itemsList) {
-
-        mContactList = itemsList;
-        notifyDataSetChanged();
-
-    }
-
-    public static List<Item> deptsToItemsList(List<Department> deptsList) {
-
-        int numOfItems = deptsList.size();
-        List<Item> result = new ArrayList<>(numOfItems);
-
-        for (int i = 0; i < numOfItems; i++) {
-            Department dept = deptsList.get(i);
-
-            Item item = new Item(dept.getName());
-
-            List<Department> innerDepts;
-            List<Person> personsList;
-
-            if ((innerDepts = dept.getDepartments()) != null) {
-
-                item.setItems(deptsToItemsList(innerDepts));
-
-            }/* else if ((personsList = dept.getEmployees()) != null) {
-
-                List<Item> itemList = deptsToItemsList(personsList);
-                item.setItems(personsList);
-
-            }*/
-
-            result.add(item);
-        }
-
-        //printItemsList(result);
-        return result;
-    }
 
     private void onHeaderClicked(Item header) {
 
-        int index = getFlatItemsList().indexOf(header);
+        int index = getFlatItemsList(backupList).indexOf(header);
 
         if (header.isExpanded()) {
             header.collapse();
@@ -143,6 +109,50 @@ public class AddressBookAdapter extends RecyclerView.Adapter<AddressBookAdapter.
                 notifyItemRangeInserted(index + 1, header.getItems().size());
             }
         }
+    }
+
+    /*Метод адаптирует список отделов для отображения на экране в виде раскрывающегося списка.*/
+    public void setContactListData(Department dept) {
+        List<Item> itemsList = new ArrayList<>();
+        itemsList.add(deptToItem(dept));
+
+        //mContactList = itemsList;
+
+        backupList = itemsList;
+
+        notifyDataSetChanged();
+
+    }
+
+    public static Item deptToItem(Department dept) {
+
+        Item item = new Item(dept.getName());
+
+        List<Person> persons;
+        if ((persons = dept.getEmployees()) != null) {
+
+            List<Item> itemList = new ArrayList<>(persons.size());
+            for (Person p : persons) {
+                itemList.add(new Item(p.toString()));
+            }
+
+            item.setItems(itemList);
+        }
+
+
+        List<Department> innerDepts;
+        if ((innerDepts = dept.getDepartments()) != null) {
+
+            List<Item> itemList = new ArrayList<>(innerDepts.size());
+            for (Department d : innerDepts) {
+                itemList.add(deptToItem(d));
+            }
+
+            item.setItems(itemList);
+        }
+
+        return item;
+
     }
 
     public static void printItemsList(List<Item> itemsList) {

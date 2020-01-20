@@ -118,14 +118,16 @@ public class MainActivity extends AppCompatActivity {
         Department dept = null;
         try {
             dept = parseFromJson(jsonString);
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
         if (dept != null) {
-            printDeptsList(dept.getDepartments());
+            //AddressBookAdapter.printItemsList(AddressBookAdapter.deptToItem(dept).getItems());
+            //printDeptsList(dept.getDepartments());
             showContactDataView();
-            //mAddressBookAdapter.setContactListData(AddressBookAdapter.deptsToItemsList(dept));
+            mAddressBookAdapter.setContactListData(dept);
         } else {
             showErrorMessage();
         }
