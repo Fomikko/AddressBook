@@ -1,7 +1,4 @@
-package com.taxtelecom.arinamurasheva.addressbook.utilities;
-
-import com.taxtelecom.arinamurasheva.addressbook.model.Department;
-import com.taxtelecom.arinamurasheva.addressbook.model.Person;
+package com.taxtelecom.arinamurasheva.addressbook.model;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -10,9 +7,12 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ParserFromJsonUtils {
 
-    public static Department parseFromJson(String deptJsonString) throws JSONException {
+public class ContactListModel implements IContactListModel {
+
+
+    @Override
+    public Department fetchContactListData(String deptJsonString) throws JSONException {
 
         /*Получнеие корневого объекта (Отдел).*/
         JSONObject deptJsonObject = new JSONObject(deptJsonString);
@@ -20,7 +20,6 @@ public class ParserFromJsonUtils {
         return getDepartment(deptJsonObject);
 
     }
-
 
     private static Department getDepartment(JSONObject deptJsonObject) throws JSONException {
 
@@ -99,7 +98,7 @@ public class ParserFromJsonUtils {
         return parsedPersonsList;
     }
 
-    public static Person getEmployee(JSONObject personJsonObject) throws JSONException {
+    private static Person getEmployee(JSONObject personJsonObject) throws JSONException {
 
         /*Информация о сотрудниках.*/
         final String CL_CONTACT_ID = "ID";
@@ -125,9 +124,7 @@ public class ParserFromJsonUtils {
             personPhone = personJsonObject.getString(CL_CONTACT_PHONE);
         }
 
-        Person person = new Person(personId, personName, personTitle, personEmail, personPhone);
-
-        return person;
+        return new Person(personId, personName, personTitle, personEmail, personPhone);
 
     }
 

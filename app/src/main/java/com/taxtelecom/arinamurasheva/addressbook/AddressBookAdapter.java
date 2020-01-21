@@ -113,8 +113,6 @@ public class AddressBookAdapter extends RecyclerView.Adapter<AddressBookAdapter.
         List<Item> itemsList = new ArrayList<>();
         itemsList.add(deptToItem(dept));
 
-        //mContactList = itemsList;
-
         backupList = itemsList;
 
         notifyDataSetChanged();
