@@ -11,9 +11,6 @@ import android.widget.TextView;
 
 import com.taxtelecom.arinamurasheva.addressbook.Presenter.IMainPresenter;
 import com.taxtelecom.arinamurasheva.addressbook.Presenter.MainPresenter;
-import com.taxtelecom.arinamurasheva.addressbook.model.Department;
-
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements IMainView {
 

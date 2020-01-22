@@ -22,9 +22,7 @@ public class ContactListModel implements IContactListModel {
 
     private Department rootDepartment;
 
-    private List<IJsonResponseSubscriber> jsonResponseSubscribers = new ArrayList<>();
-
-
+    private final List<IJsonResponseSubscriber> jsonResponseSubscribers = new ArrayList<>();
 
     @Override
     public Department getRootDepartment() {
@@ -36,14 +34,11 @@ public class ContactListModel implements IContactListModel {
 
         /*Получнеие корневого объекта (Отдел).*/
         JSONObject deptJsonObject = new JSONObject(deptJsonString);
-        Log.d(this.getClass().getSimpleName(), "got department json object");
         return getDepartment(deptJsonObject);
 
     }
 
     private static Department getDepartment(JSONObject deptJsonObject) throws JSONException {
-
-        Log.d("ContactListModel", "getting department!!!");
 
         /*Информация об отделе.*/
         final String CL_DEPT_ID = "ID";
@@ -192,7 +187,6 @@ public class ContactListModel implements IContactListModel {
                 Department dept = null;
 
                 try {
-                    Log.d(this.getClass().toString(), "getting department from json...");
                     dept = getDeptFromJson(responseJsonString);
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -202,7 +196,6 @@ public class ContactListModel implements IContactListModel {
 
                 notifySubscribers();
 
-                Log.d("rootDepartment", rootDepartment.toString());
             }
 
         });
@@ -211,17 +204,24 @@ public class ContactListModel implements IContactListModel {
 
     @Override
     public void subscribe(IJsonResponseSubscriber subscriber) {
-        this.jsonResponseSubscribers.add(subscriber);
+        synchronized (jsonResponseSubscribers) {
+            this.jsonResponseSubscribers.add(subscriber);
+        }
     }
 
     @Override
     public void unsubscribe(IJsonResponseSubscriber subscriber) {
-        this.jsonResponseSubscribers.remove(subscriber);
+        synchronized (jsonResponseSubscribers) {
+            this.jsonResponseSubscribers.remove(subscriber);
+        }
     }
 
+    @Override
     public void notifySubscribers() {
-        for (IJsonResponseSubscriber subscriber : jsonResponseSubscribers) {
-            subscriber.update();
+        synchronized (jsonResponseSubscribers) {
+            for (IJsonResponseSubscriber subscriber : jsonResponseSubscribers) {
+                subscriber.update();
+            }
         }
     }
 

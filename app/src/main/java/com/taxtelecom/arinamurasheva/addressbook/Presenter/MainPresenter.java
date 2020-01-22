@@ -33,13 +33,9 @@ public class MainPresenter implements IMainPresenter, IJsonResponseSubscriber {
 
         String contactListRequestUrl = NetworkUtils.buildUrl(login, password);
 
-        Log.d(this.getClass().toString(), "fetching contact list data...");
         _model.fetchContactListData(contactListRequestUrl);
 
         _model.subscribe(this);
-
-        Log.d(this.getClass().toString(), "fetched contact list data...");
-
     }
 
 
@@ -78,7 +74,6 @@ public class MainPresenter implements IMainPresenter, IJsonResponseSubscriber {
         Department dept;
 
         if ((dept = _model.getRootDepartment()) != null) {
-            Log.d(this.getClass().toString(), "got root department");
 
             _view.showContactDataView();
             _view.setContactListLayout(deptToItem(dept));
