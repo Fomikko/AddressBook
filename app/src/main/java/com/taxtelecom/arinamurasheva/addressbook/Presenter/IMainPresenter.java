@@ -7,6 +7,5 @@ import java.io.IOException;
 public interface IMainPresenter {
 
     void onGetDataLoadRequest();
-    void fetchContactListData(String utl);
 
 }

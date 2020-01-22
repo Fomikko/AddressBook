@@ -2,10 +2,13 @@ package com.taxtelecom.arinamurasheva.addressbook.model;
 
 import org.json.JSONException;
 
-import java.io.IOException;
-
 public interface IContactListModel {
 
-    Department fetchContactListData(String url) throws JSONException;
+    Department getDeptFromJson(String url) throws JSONException;
+    Department getRootDepartment();
+    void fetchContactListData(String url);
+    void subscribe(IJsonResponseSubscriber subscriber);
+    void unsubscribe(IJsonResponseSubscriber subscriber);
+    void notifySubscribers();
 
 }

@@ -1,30 +1,24 @@
 package com.taxtelecom.arinamurasheva.addressbook.Presenter;
 
-import android.view.View;
+import android.util.Log;
 
 import com.taxtelecom.arinamurasheva.addressbook.IMainView;
-import com.taxtelecom.arinamurasheva.addressbook.MainActivity;
+import com.taxtelecom.arinamurasheva.addressbook.Item;
 import com.taxtelecom.arinamurasheva.addressbook.model.Department;
 import com.taxtelecom.arinamurasheva.addressbook.model.IContactListModel;
 import com.taxtelecom.arinamurasheva.addressbook.model.ContactListModel;
+import com.taxtelecom.arinamurasheva.addressbook.model.IJsonResponseSubscriber;
+import com.taxtelecom.arinamurasheva.addressbook.model.Person;
 import com.taxtelecom.arinamurasheva.addressbook.utilities.NetworkUtils;
 
-import org.jetbrains.annotations.NotNull;
-import org.json.JSONException;
+import java.util.ArrayList;
+import java.util.List;
 
-import java.io.IOException;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-
-public class MainPresenter implements IMainPresenter {
+public class MainPresenter implements IMainPresenter, IJsonResponseSubscriber {
 
     private IMainView _view;
     private IContactListModel _model;
-
 
     public MainPresenter (IMainView view) {
         _view = view;
@@ -39,52 +33,55 @@ public class MainPresenter implements IMainPresenter {
 
         String contactListRequestUrl = NetworkUtils.buildUrl(login, password);
 
-        fetchContactListData(contactListRequestUrl);
+        Log.d(this.getClass().toString(), "fetching contact list data...");
+        _model.fetchContactListData(contactListRequestUrl);
+
+        _model.subscribe(this);
+
+        Log.d(this.getClass().toString(), "fetched contact list data...");
+
+    }
+
+
+    private static Item deptToItem(Department dept) {
+
+        Item item = new Item(dept.getName());
+
+        List<Person> persons;
+        if ((persons = dept.getEmployees()) != null) {
+
+            List<Item> itemList = new ArrayList<>(persons.size());
+            for (Person p : persons) {
+                itemList.add(new Item(p.toString()));
+            }
+
+            item.setItems(itemList);
+        }
+
+        List<Department> innerDepts;
+        if ((innerDepts = dept.getDepartments()) != null) {
+
+            List<Item> itemList = new ArrayList<>(innerDepts.size());
+            for (Department d : innerDepts) {
+                itemList.add(deptToItem(d));
+            }
+
+            item.setItems(itemList);
+        }
+
+        return item;
 
     }
 
     @Override
-    public void fetchContactListData(String url) {
+    public void update() {
+        Department dept;
 
+        if ((dept = _model.getRootDepartment()) != null) {
+            Log.d(this.getClass().toString(), "got root department");
 
-        OkHttpClient client = new OkHttpClient();
-
-        Request request = new Request.Builder()
-                .url(url)
-                .build();
-
-        client.newCall(request).enqueue(new Callback() {
-
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                call.cancel();
-            }
-
-
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                final String responseJsonString = response.body().string();
-
-                Department dept = null;
-
-                try {
-                    dept = _model.fetchContactListData(responseJsonString);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-                if (dept != null) {
-                    _view.showContactDataView();
-                    _view.setContactListLayout(dept);
-
-                } else {
-                    _view.showErrorMessage();
-                }
-            }
-
-        });
+            _view.showContactDataView();
+            _view.setContactListLayout(deptToItem(dept));
+        }
     }
-
-
 }

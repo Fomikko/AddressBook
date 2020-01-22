@@ -12,12 +12,22 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.taxtelecom.arinamurasheva.addressbook.model.Department;
 import com.taxtelecom.arinamurasheva.addressbook.model.Person;
 
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
 public class AddressBookAdapter extends RecyclerView.Adapter<AddressBookAdapter.AddressBookAdapterViewHolder> {
 
-    private List<Item> backupList;
+    private List<Item> contactList;
 
     public AddressBookAdapter() {
 
@@ -69,7 +79,7 @@ public class AddressBookAdapter extends RecyclerView.Adapter<AddressBookAdapter.
     @Override
     public int getItemCount() {
         try {
-            return getFlatItemsList(backupList).size();
+            return getFlatItemsList(contactList).size();
         } catch (NullPointerException e) {
             return 0;
         }
@@ -78,7 +88,7 @@ public class AddressBookAdapter extends RecyclerView.Adapter<AddressBookAdapter.
     @Override
     public void onBindViewHolder(@NonNull AddressBookAdapterViewHolder holder, int position) {
 
-        final Item contactListItemData = getFlatItemsList(backupList).get(position);
+        final Item contactListItemData = getFlatItemsList(contactList).get(position);
 
         View.OnClickListener headerListener = new View.OnClickListener() {
             @Override
@@ -94,7 +104,7 @@ public class AddressBookAdapter extends RecyclerView.Adapter<AddressBookAdapter.
 
     private void onHeaderClicked(Item header) {
 
-        int index = getFlatItemsList(backupList).indexOf(header);
+        int index = getFlatItemsList(contactList).indexOf(header);
 
         if (header.isExpanded()) {
             header.collapse();
@@ -109,46 +119,16 @@ public class AddressBookAdapter extends RecyclerView.Adapter<AddressBookAdapter.
     }
 
     /*Метод адаптирует список отделов для отображения на экране в виде раскрывающегося списка.*/
-    public void setContactListData(Department dept) {
-        List<Item> itemsList = new ArrayList<>();
-        itemsList.add(deptToItem(dept));
+    public void setContactListData(Item item) {
 
-        backupList = itemsList;
+        List<Item> itemsList = new ArrayList<>(1);
+        itemsList.add(item);
 
+        contactList = itemsList;
         notifyDataSetChanged();
 
     }
 
-    public static Item deptToItem(Department dept) {
-
-        Item item = new Item(dept.getName());
-
-        List<Person> persons;
-        if ((persons = dept.getEmployees()) != null) {
-
-            List<Item> itemList = new ArrayList<>(persons.size());
-            for (Person p : persons) {
-                itemList.add(new Item(p.toString()));
-            }
-
-            item.setItems(itemList);
-        }
-
-
-        List<Department> innerDepts;
-        if ((innerDepts = dept.getDepartments()) != null) {
-
-            List<Item> itemList = new ArrayList<>(innerDepts.size());
-            for (Department d : innerDepts) {
-                itemList.add(deptToItem(d));
-            }
-
-            item.setItems(itemList);
-        }
-
-        return item;
-
-    }
 
     public static void printItemsList(List<Item> itemsList) {
         for (Item item : itemsList) {

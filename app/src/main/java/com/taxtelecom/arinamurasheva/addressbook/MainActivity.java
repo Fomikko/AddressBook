@@ -13,6 +13,8 @@ import com.taxtelecom.arinamurasheva.addressbook.Presenter.IMainPresenter;
 import com.taxtelecom.arinamurasheva.addressbook.Presenter.MainPresenter;
 import com.taxtelecom.arinamurasheva.addressbook.model.Department;
 
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity implements IMainView {
 
     IMainPresenter presenter;
@@ -54,7 +56,6 @@ public class MainActivity extends AppCompatActivity implements IMainView {
         mRecyclerView.setAdapter(mAddressBookAdapter);
 
         mLoadingIndicator = findViewById(R.id.pb_loading_indicator);
-
         mLoadingIndicator.setVisibility(View.VISIBLE);
 
         requestDataLoad();
@@ -68,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements IMainView {
 
     @Override
     public void showContactDataView() {
-        mErrorMessageDisplay.setVisibility(View.INVISIBLE);
+        mLoadingIndicator.setVisibility(View.INVISIBLE);
         mRecyclerView.setVisibility(View.VISIBLE);
     }
 
@@ -86,9 +87,14 @@ public class MainActivity extends AppCompatActivity implements IMainView {
 
 
     @Override
-    public void setContactListLayout(Department dept) {
+    public void setContactListLayout(final Item item) {
+        MainActivity.this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mAddressBookAdapter.setContactListData(item);
 
-        mAddressBookAdapter.setContactListData(dept);
+            }
+        });
 
     }
 
