@@ -2,13 +2,23 @@ package com.taxtelecom.arinamurasheva.addressbook.model;
 
 import androidx.annotation.NonNull;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 import java.util.List;
 
 public class Department implements Serializable {
+
+    @SerializedName("ID")
     private String id;
+
+    @SerializedName("Name")
     private String name;
+
+    @SerializedName("Departments")
     private List<Department> mDepartments;
+
+    @SerializedName("Employees")
     private List<Person> mEmployees;
 
     public Department(String id, String name) {

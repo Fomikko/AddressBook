@@ -2,6 +2,9 @@ package com.taxtelecom.arinamurasheva.addressbook.model;
 
 import android.util.Log;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,9 +35,14 @@ public class ContactListModel implements IContactListModel {
     @Override
     public Department getDeptFromJson(String deptJsonString) throws JSONException {
 
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        Gson gson = gsonBuilder.create();
+
+        return gson.fromJson(deptJsonString, Department.class);
+
         /*Получнеие корневого объекта (Отдел).*/
-        JSONObject deptJsonObject = new JSONObject(deptJsonString);
-        return getDepartment(deptJsonObject);
+        //JSONObject deptJsonObject = new JSONObject(deptJsonString);
+        //return getDepartment(deptJsonObject);
 
     }
 

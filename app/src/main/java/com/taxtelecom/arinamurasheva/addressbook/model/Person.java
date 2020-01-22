@@ -2,14 +2,25 @@ package com.taxtelecom.arinamurasheva.addressbook.model;
 
 import androidx.annotation.NonNull;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 
 public class Person implements Serializable {
 
+    @SerializedName("ID")
     String id;
+
+    @SerializedName("Name")
     String name;
+
+    @SerializedName("Title")
     String title;
+
+    @SerializedName("Email")
     String email;
+
+    @SerializedName("Phone")
     String phone;
 
     public Person(String id, String name, String title, String email, String phone) {
