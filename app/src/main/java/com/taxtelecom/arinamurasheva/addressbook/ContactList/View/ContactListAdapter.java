@@ -1,4 +1,4 @@
-package com.taxtelecom.arinamurasheva.addressbook;
+package com.taxtelecom.arinamurasheva.addressbook.ContactList.View;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,15 +9,17 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.taxtelecom.arinamurasheva.addressbook.R;
+
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class AddressBookAdapter extends RecyclerView.Adapter<AddressBookAdapter.AddressBookAdapterViewHolder> {
+public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.AddressBookAdapterViewHolder> {
 
     private List<Item> contactList;
 
-    public AddressBookAdapter() {
+    public ContactListAdapter() {
 
     }
 

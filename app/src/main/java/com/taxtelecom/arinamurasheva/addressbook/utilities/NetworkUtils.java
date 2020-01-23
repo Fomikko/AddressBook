@@ -39,30 +39,4 @@ public class NetworkUtils {
         return url.toString();
     }
 
-    /**
-     * This method returns the entire result from the HTTP response.
-     *
-     * @param url URL, откуда нужно получить ответ.
-     * @return Содержание ответа HTTP.
-     */
-/*    public static String getResponseFromHttp(URL url) throws IOException {
-        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-
-        try {
-            InputStream in = urlConnection.getInputStream();
-
-            Scanner scanner = new Scanner(in);
-            scanner.useDelimiter("\\A");
-
-            boolean hasInput = scanner.hasNext();
-            if (hasInput) {
-                return scanner.next();
-            } else {
-                return null;
-            }
-        } finally {
-            urlConnection.disconnect();
-        }
-    }*/
-
 }

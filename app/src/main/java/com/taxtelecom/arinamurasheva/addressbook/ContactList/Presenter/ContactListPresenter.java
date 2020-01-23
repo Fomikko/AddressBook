@@ -1,28 +1,26 @@
-package com.taxtelecom.arinamurasheva.addressbook.Presenter;
+package com.taxtelecom.arinamurasheva.addressbook.ContactList.Presenter;
 
-import android.util.Log;
-
-import com.taxtelecom.arinamurasheva.addressbook.IMainView;
-import com.taxtelecom.arinamurasheva.addressbook.Item;
-import com.taxtelecom.arinamurasheva.addressbook.model.Department;
-import com.taxtelecom.arinamurasheva.addressbook.model.IContactListModel;
-import com.taxtelecom.arinamurasheva.addressbook.model.ContactListModel;
-import com.taxtelecom.arinamurasheva.addressbook.model.IJsonResponseSubscriber;
-import com.taxtelecom.arinamurasheva.addressbook.model.Person;
+import com.taxtelecom.arinamurasheva.addressbook.ContactList.View.IContactListView;
+import com.taxtelecom.arinamurasheva.addressbook.ContactList.View.Item;
+import com.taxtelecom.arinamurasheva.addressbook.ContactList.Model.Department;
+import com.taxtelecom.arinamurasheva.addressbook.ContactList.Contractor.IContactListContractor;
+import com.taxtelecom.arinamurasheva.addressbook.ContactList.Contractor.ContactListContractor;
+import com.taxtelecom.arinamurasheva.addressbook.ContactList.Model.Person;
+import com.taxtelecom.arinamurasheva.addressbook.Observer.ISubscriber;
 import com.taxtelecom.arinamurasheva.addressbook.utilities.NetworkUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class MainPresenter implements IMainPresenter, IJsonResponseSubscriber {
+public class ContactListPresenter implements IContactListPresenter, ISubscriber {
 
-    private IMainView _view;
-    private IContactListModel _model;
+    private IContactListView _view;
+    private IContactListContractor _model;
 
-    public MainPresenter (IMainView view) {
+    public ContactListPresenter(IContactListView view) {
         _view = view;
-        _model = new ContactListModel();
+        _model = new ContactListContractor();
 
     }
 

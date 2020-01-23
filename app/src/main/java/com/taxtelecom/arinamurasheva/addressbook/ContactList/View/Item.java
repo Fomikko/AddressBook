@@ -1,4 +1,4 @@
-package com.taxtelecom.arinamurasheva.addressbook;
+package com.taxtelecom.arinamurasheva.addressbook.ContactList.View;
 
 import androidx.annotation.NonNull;
 

@@ -1,4 +1,4 @@
-package com.taxtelecom.arinamurasheva.addressbook;
+package com.taxtelecom.arinamurasheva.addressbook.ContactList.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -9,16 +9,17 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.taxtelecom.arinamurasheva.addressbook.Presenter.IMainPresenter;
-import com.taxtelecom.arinamurasheva.addressbook.Presenter.MainPresenter;
+import com.taxtelecom.arinamurasheva.addressbook.ContactList.Presenter.IContactListPresenter;
+import com.taxtelecom.arinamurasheva.addressbook.ContactList.Presenter.ContactListPresenter;
+import com.taxtelecom.arinamurasheva.addressbook.R;
 
-public class MainActivity extends AppCompatActivity implements IMainView {
+public class ContactListActivity extends AppCompatActivity implements IContactListView {
 
-    IMainPresenter presenter;
+    IContactListPresenter presenter;
 
     private RecyclerView mRecyclerView;
 
-    private AddressBookAdapter mAddressBookAdapter;
+    private ContactListAdapter mContactListAdapter;
 
     private TextView mErrorMessageDisplay;
 
@@ -30,7 +31,7 @@ public class MainActivity extends AppCompatActivity implements IMainView {
         setContentView(R.layout.activity_main);
 
         if (presenter == null) {
-            presenter = new MainPresenter(this);
+            presenter = new ContactListPresenter(this);
         }
 
         mRecyclerView = findViewById(R.id.recyclerview_address_book);
@@ -48,9 +49,9 @@ public class MainActivity extends AppCompatActivity implements IMainView {
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);
 
-        mAddressBookAdapter = new AddressBookAdapter();
+        mContactListAdapter = new ContactListAdapter();
 
-        mRecyclerView.setAdapter(mAddressBookAdapter);
+        mRecyclerView.setAdapter(mContactListAdapter);
 
         mLoadingIndicator = findViewById(R.id.pb_loading_indicator);
         mLoadingIndicator.setVisibility(View.VISIBLE);
@@ -85,10 +86,10 @@ public class MainActivity extends AppCompatActivity implements IMainView {
 
     @Override
     public void setContactListLayout(final Item item) {
-        MainActivity.this.runOnUiThread(new Runnable() {
+        ContactListActivity.this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mAddressBookAdapter.setContactListData(item);
+                mContactListAdapter.setContactListData(item);
 
             }
         });

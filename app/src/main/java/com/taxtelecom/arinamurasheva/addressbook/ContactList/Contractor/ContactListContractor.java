@@ -1,9 +1,10 @@
-package com.taxtelecom.arinamurasheva.addressbook.model;
-
-import android.util.Log;
+package com.taxtelecom.arinamurasheva.addressbook.ContactList.Contractor;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.taxtelecom.arinamurasheva.addressbook.ContactList.Model.Department;
+import com.taxtelecom.arinamurasheva.addressbook.Observer.ISubscriber;
+import com.taxtelecom.arinamurasheva.addressbook.ContactList.Model.Person;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -21,11 +22,11 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 
-public class ContactListModel implements IContactListModel {
+public class ContactListContractor implements IContactListContractor {
 
     private Department rootDepartment;
 
-    private final List<IJsonResponseSubscriber> jsonResponseSubscribers = new ArrayList<>();
+    private final List<ISubscriber> jsonResponseSubscribers = new ArrayList<>();
 
     @Override
     public Department getRootDepartment() {
@@ -211,14 +212,14 @@ public class ContactListModel implements IContactListModel {
     }
 
     @Override
-    public void subscribe(IJsonResponseSubscriber subscriber) {
+    public void subscribe(ISubscriber subscriber) {
         synchronized (jsonResponseSubscribers) {
             this.jsonResponseSubscribers.add(subscriber);
         }
     }
 
     @Override
-    public void unsubscribe(IJsonResponseSubscriber subscriber) {
+    public void unsubscribe(ISubscriber subscriber) {
         synchronized (jsonResponseSubscribers) {
             this.jsonResponseSubscribers.remove(subscriber);
         }
@@ -227,7 +228,7 @@ public class ContactListModel implements IContactListModel {
     @Override
     public void notifySubscribers() {
         synchronized (jsonResponseSubscribers) {
-            for (IJsonResponseSubscriber subscriber : jsonResponseSubscribers) {
+            for (ISubscriber subscriber : jsonResponseSubscribers) {
                 subscriber.update();
             }
         }
