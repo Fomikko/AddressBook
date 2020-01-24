@@ -29,7 +29,7 @@ public class ContactListPresenter implements IContactListPresenter, ISubscriber 
         String login = "test_user";
         String password = "test_pass";
 
-        String contactListRequestUrl = NetworkUtils.buildUrl(login, password);
+        String contactListRequestUrl = NetworkUtils.buildContactListUrl(login, password);
 
         _model.fetchContactListData(contactListRequestUrl);
 

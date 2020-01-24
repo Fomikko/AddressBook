@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="16dp"
+    android:layout_margin="16dp">
+
+    <TextView
+        android:id="@+id/tv_authenticator_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:text="@string/authentication"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+    <TextView
+        android:id="@+id/tv_user_login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_authenticator_title"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="75dp"
+        android:text="@string/user_login"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+    <EditText
+        android:id="@+id/ev_user_login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/tv_user_login"
+        android:layout_marginLeft="35dp"
+        android:layout_toRightOf="@id/tv_user_login"
+        android:hint="@string/user_login_hint"
+        android:inputType="text">
+
+        <requestFocus />
+    </EditText>
+
+    <TextView
+        android:id="@+id/tv_user_password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_user_login"
+        android:layout_alignLeft="@id/tv_user_login"
+        android:layout_marginTop="40dp"
+        android:text="@string/user_password"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+    <EditText
+        android:id="@+id/ev_user_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/ev_user_login"
+        android:layout_alignRight="@id/ev_user_login"
+        android:layout_alignBottom="@id/tv_user_password"
+        android:hint="@string/user_password_hint"
+        android:inputType="textPassword" />
+
+    <TextView
+        android:id="@+id/tv_auth_error_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:visibility="invisible"
+        android:layout_below="@id/tv_user_password"
+        android:layout_alignLeft="@id/tv_user_password"
+        android:layout_alignRight="@id/ev_user_password"
+        android:layout_marginTop="40dp" />
+
+    <Button
+        android:id="@+id/bt_login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_auth_error_message"
+        android:layout_marginTop="75dp"
+        android:layout_alignRight="@id/ev_user_password"
+        android:onClick="Login"
+        android:text="@string/log_in" />
+
+</RelativeLayout>

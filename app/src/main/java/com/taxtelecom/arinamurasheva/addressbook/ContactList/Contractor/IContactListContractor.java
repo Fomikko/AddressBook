@@ -10,5 +10,5 @@ public interface IContactListContractor extends IPublisher {
     Department getDeptFromJson(String url) throws JSONException;
     Department getRootDepartment();
     void fetchContactListData(String url);
-    
+
 }

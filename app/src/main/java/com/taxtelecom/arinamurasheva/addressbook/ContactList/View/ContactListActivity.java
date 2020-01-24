@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -13,7 +14,7 @@ import com.taxtelecom.arinamurasheva.addressbook.ContactList.Presenter.IContactL
 import com.taxtelecom.arinamurasheva.addressbook.ContactList.Presenter.ContactListPresenter;
 import com.taxtelecom.arinamurasheva.addressbook.R;
 
-public class ContactListActivity extends AppCompatActivity implements IContactListView {
+public class ContactListActivity extends Activity implements IContactListView {
 
     IContactListPresenter presenter;
 
@@ -28,7 +29,7 @@ public class ContactListActivity extends AppCompatActivity implements IContactLi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.contact_list_activity);
 
         if (presenter == null) {
             presenter = new ContactListPresenter(this);
@@ -90,10 +91,8 @@ public class ContactListActivity extends AppCompatActivity implements IContactLi
             @Override
             public void run() {
                 mContactListAdapter.setContactListData(item);
-
             }
         });
-
     }
 
 

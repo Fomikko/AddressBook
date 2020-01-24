@@ -1,4 +1,11 @@
 <resources>
     <string name="app_name">Адресная книга</string>
     <string name="error_message">Возникла ошибка. Попытайтесь снова.</string>
+    <string name="user_login_hint">Ваш логин</string>
+    <string name="user_password_hint">Ваш пароль</string>
+    <string name="user_password">Пароль</string>
+    <string name="user_login">Логин</string>
+    <string name="authentication">Авторизация</string>
+    <string name="log_in">Войти</string>
+    <string name="auth_preference_file">com.taxtelecom.arinamurasheva.addressbook.PreferenceFileAuth</string>
 </resources>
