@@ -7,5 +7,6 @@
     <string name="user_login">Логин</string>
     <string name="authentication">Авторизация</string>
     <string name="log_in">Войти</string>
+    <string name="log_out">Выйти</string>
     <string name="auth_preference_file">com.taxtelecom.arinamurasheva.addressbook.PreferenceFileAuth</string>
 </resources>

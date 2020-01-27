@@ -1,24 +1,39 @@
 package com.taxtelecom.arinamurasheva.addressbook.Authenticator;
 
+import com.taxtelecom.arinamurasheva.addressbook.ContactListApp;
+
 public class AuthenticatorPresenter {
     private AuthenticatorActivity _view;
     private TaxtelecomAuthenticator _model;
 
-    public AuthenticatorPresenter(AuthenticatorActivity view) {
+    AuthenticatorPresenter(AuthenticatorActivity view) {
         _view = view;
         _model = new TaxtelecomAuthenticator();
+
     }
 
-    public void onGetConfirmCredentialsRequest(String userLogin, String userPassword) {
-        _model.confirmCredentials(userLogin, userPassword);
-        _model.subscribe(this);
+    void onGetCheckUserDataPresence() {
+        String userLogin = ContactListApp.getSharedPreferencesManager().getUserLogin();
+        String userPassword = ContactListApp.getSharedPreferencesManager().getUserPassword();
+
+        if(!userLogin.equals("") && !userPassword.equals("")) {
+           _view.goToContactListView();
+        }
     }
 
-    public void updateSuccess() {
+    void updateSuccess() {
         _view.goToContactListView();
     }
 
-    public void updateFail(String message) {
+    void updateFail(String message) {
         _view.showErrorMessage(message);
     }
+
+    void onGetLogin(String userLogin, String userPassword) {
+        _model.confirmCredentials(userLogin, userPassword);
+        _model.subscribe(this);
+
+    }
+
+
 }

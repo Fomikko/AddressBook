@@ -9,21 +9,18 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.taxtelecom.arinamurasheva.addressbook.ContactList.View.ContactListActivity;
 import com.taxtelecom.arinamurasheva.addressbook.R;
 
-public class AuthenticatorActivity extends Activity {
+public class AuthenticatorActivity extends AppCompatActivity {
 
     AuthenticatorPresenter presenter;
 
     private EditText mLoginEditText;
     private EditText mPasswordEditText;
     private TextView mErrorMessage;
-
-    SharedPreferences mUserData;
-
-    public static final String USER_LOGIN = "login";
-    public static final String USER_PASSWORD = "password";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,11 +30,6 @@ public class AuthenticatorActivity extends Activity {
         if (presenter == null) {
             presenter = new AuthenticatorPresenter(this);
         }
-
-
-        mUserData = this.getSharedPreferences(
-                getString(R.string.auth_preference_file),
-                Context.MODE_PRIVATE);
 
         checkUserDataPresence();
 
@@ -49,15 +41,12 @@ public class AuthenticatorActivity extends Activity {
     }
 
     public void Login(View view) {
+
         String userLogin = mLoginEditText.getText().toString();
         String userPassword = mPasswordEditText.getText().toString();
 
-        requestCredentialsConfirmation(userLogin, userPassword);
-        saveUserData(userLogin, userPassword);
-    }
+        presenter.onGetLogin(userLogin, userPassword);
 
-    public void requestCredentialsConfirmation(String userLogin, String userPassword) {
-        presenter.onGetConfirmCredentialsRequest(userLogin, userPassword);
     }
 
     public void goToContactListView() {
@@ -69,21 +58,7 @@ public class AuthenticatorActivity extends Activity {
     }
 
     public void checkUserDataPresence() {
-        String userLogin = mUserData.getString(USER_LOGIN, "");
-        String userPassword = mUserData.getString(USER_PASSWORD, "");
-
-        if(!userLogin.equals("") && !userPassword.equals("")) {
-            requestCredentialsConfirmation(userLogin, userPassword);
-        }
-    }
-
-    public void saveUserData(String userLogin, String userPassword) {
-
-
-        SharedPreferences.Editor editor = mUserData.edit();
-        editor.putString(USER_LOGIN, userLogin);
-        editor.putString(USER_PASSWORD, userPassword);
-        editor.apply();
+        presenter.onGetCheckUserDataPresence();
 
     }
 

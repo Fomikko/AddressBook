@@ -1,11 +1,15 @@
 package com.taxtelecom.arinamurasheva.addressbook.ContactList.Presenter;
 
+import android.util.Log;
+
+import com.taxtelecom.arinamurasheva.addressbook.Authenticator.SharedPreferencesManager;
 import com.taxtelecom.arinamurasheva.addressbook.ContactList.View.IContactListView;
 import com.taxtelecom.arinamurasheva.addressbook.ContactList.View.Item;
 import com.taxtelecom.arinamurasheva.addressbook.ContactList.Model.Department;
 import com.taxtelecom.arinamurasheva.addressbook.ContactList.Contractor.IContactListContractor;
 import com.taxtelecom.arinamurasheva.addressbook.ContactList.Contractor.ContactListContractor;
 import com.taxtelecom.arinamurasheva.addressbook.ContactList.Model.Person;
+import com.taxtelecom.arinamurasheva.addressbook.ContactListApp;
 import com.taxtelecom.arinamurasheva.addressbook.Observer.ISubscriber;
 import com.taxtelecom.arinamurasheva.addressbook.utilities.NetworkUtils;
 
@@ -14,6 +18,8 @@ import java.util.List;
 
 
 public class ContactListPresenter implements IContactListPresenter, ISubscriber {
+
+    private final String TAG = "ContactListPresenter";
 
     private IContactListView _view;
     private IContactListContractor _model;
@@ -26,10 +32,7 @@ public class ContactListPresenter implements IContactListPresenter, ISubscriber 
 
     @Override
     public void onGetDataLoadRequest() {
-        String login = "test_user";
-        String password = "test_pass";
-
-        String contactListRequestUrl = NetworkUtils.buildContactListUrl(login, password);
+        String contactListRequestUrl = NetworkUtils.buildContactListUrl();
 
         _model.fetchContactListData(contactListRequestUrl);
 
@@ -77,4 +80,25 @@ public class ContactListPresenter implements IContactListPresenter, ISubscriber 
             _view.setContactListLayout(deptToItem(dept));
         }
     }
+
+    @Override
+    public void onGetLogOutRequest() {
+        ContactListApp.getSharedPreferencesManager().removeUserData();
+/*        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }*/
+        _view.goToLoginView();
+        //SharedPreferencesManager.subscribe(this);
+
+    }
+
+/*    @Override
+    public void onLoggedOut() {
+        _view.goToLoginView();
+    }*/
+
+
+
 }

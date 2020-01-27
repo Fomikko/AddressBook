@@ -1,5 +1,6 @@
 package com.taxtelecom.arinamurasheva.addressbook.Authenticator;
 
+import com.taxtelecom.arinamurasheva.addressbook.ContactListApp;
 import com.taxtelecom.arinamurasheva.addressbook.utilities.NetworkUtils;
 
 import org.jetbrains.annotations.NotNull;
@@ -22,7 +23,7 @@ public class TaxtelecomAuthenticator {
 
 
 
-    public void confirmCredentials(String userLogin, String userPassword) {
+    public void confirmCredentials(final String userLogin, final String userPassword) {
 
         OkHttpClient client = new OkHttpClient();
 
@@ -63,6 +64,7 @@ public class TaxtelecomAuthenticator {
 
                 if (isValid) {
                     notifySubscribersSuccess();
+                    ContactListApp.getSharedPreferencesManager().saveUserData(userLogin, userPassword);
 
                 } else {
                     notifySubscribersFail(errorMessage);
@@ -76,12 +78,6 @@ public class TaxtelecomAuthenticator {
     public void subscribe(AuthenticatorPresenter subscriber) {
         synchronized (subscribers) {
             subscribers.add(subscriber);
-        }
-    }
-
-    public void unsubscribe(AuthenticatorPresenter subscriber) {
-        synchronized (subscribers) {
-            subscribers.remove(subscriber);
         }
     }
 

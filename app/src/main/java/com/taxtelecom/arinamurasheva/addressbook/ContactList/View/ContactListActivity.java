@@ -1,20 +1,29 @@
 package com.taxtelecom.arinamurasheva.addressbook.ContactList.View;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.taxtelecom.arinamurasheva.addressbook.Authenticator.AuthenticatorActivity;
 import com.taxtelecom.arinamurasheva.addressbook.ContactList.Presenter.IContactListPresenter;
 import com.taxtelecom.arinamurasheva.addressbook.ContactList.Presenter.ContactListPresenter;
 import com.taxtelecom.arinamurasheva.addressbook.R;
 
-public class ContactListActivity extends Activity implements IContactListView {
+public class ContactListActivity extends AppCompatActivity implements IContactListView {
 
     IContactListPresenter presenter;
 
@@ -30,6 +39,7 @@ public class ContactListActivity extends Activity implements IContactListView {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.contact_list_activity);
+
 
         if (presenter == null) {
             presenter = new ContactListPresenter(this);
@@ -95,7 +105,43 @@ public class ContactListActivity extends Activity implements IContactListView {
         });
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int selectedItemId = item.getItemId();
+        if (selectedItemId == R.id.action_logout) {
+            logOutRequest();
+            return true;
+        }
 
+        return super.onOptionsItemSelected(item);
+    }
 
+    @Override
+    public void logOutRequest() {
+        presenter.onGetLogOutRequest();
+    }
+
+    @Override
+    public void goToLoginView() {
+        Intent mStartActivity = new Intent(
+                ContactListActivity.this,
+                AuthenticatorActivity.class);
+        int mPendingIntentId = 123456;
+        PendingIntent mPendingIntent = PendingIntent.getActivity(
+                ContactListActivity.this,
+                mPendingIntentId,
+                mStartActivity,
+                PendingIntent.FLAG_CANCEL_CURRENT);
+        AlarmManager mgr = (AlarmManager) ContactListActivity.this.getSystemService(Context.ALARM_SERVICE);
+        mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
+        System.exit(0);
+
+        //startActivity(mStartActivity);
+    }
 }

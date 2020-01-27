@@ -2,6 +2,9 @@ package com.taxtelecom.arinamurasheva.addressbook.utilities;
 
 import android.net.Uri;
 
+import com.taxtelecom.arinamurasheva.addressbook.Authenticator.SharedPreferencesManager;
+import com.taxtelecom.arinamurasheva.addressbook.ContactListApp;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -41,7 +44,12 @@ public class NetworkUtils {
         return buildUrl(PATH_AUTH, userLogin, userPassword);
     }
 
-    public static String buildContactListUrl(String userLogin, String userPassword) {
+    public static String buildContactListUrl() {
+        SharedPreferencesManager manager = ContactListApp.getSharedPreferencesManager();
+
+        String userLogin = manager.getUserLogin();
+        String userPassword = manager.getUserPassword();
+
         return buildUrl(PATH_CL, userLogin, userPassword);
     }
 
