@@ -8,5 +8,12 @@
     <string name="authentication">Авторизация</string>
     <string name="log_in">Войти</string>
     <string name="log_out">Выйти</string>
-    <string name="auth_preference_file">com.taxtelecom.arinamurasheva.addressbook.PreferenceFileAuth</string>
+    <string name="contact_name">Фамилия Имя Отчество</string>
+    <string name="contact_photo_descr">Фото контакта</string>
+    <string name="lbl_contact_title">Должность</string>
+    <string name="no_contact_title">Должность не указана.</string>
+    <string name="lbl_contact_email">Email</string>
+    <string name="no_contact_email">Email не указан.</string>
+    <string name="lbl_contact_phone">Телефон</string>
+    <string name="no_contact_phone">Телефон не указан.</string>
 </resources>

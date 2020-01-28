@@ -12,10 +12,25 @@ public class Item {
 
     private String name;
 
+    private int nestingLevel;
+
     public Item(String name) {
 
         this.name = name;
 
+    }
+
+    public Item(String name, int nestingLevel) {
+        this.name = name;
+        this.nestingLevel = nestingLevel;
+    }
+
+    public void setNestingLevel(int nestingLevel) {
+        this.nestingLevel = nestingLevel;
+    }
+
+    public int getNestingLevel() {
+        return this.nestingLevel;
     }
 
     public String getName() {

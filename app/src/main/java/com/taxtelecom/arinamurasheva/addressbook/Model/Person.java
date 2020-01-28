@@ -1,4 +1,4 @@
-package com.taxtelecom.arinamurasheva.addressbook.ContactList.Model;
+package com.taxtelecom.arinamurasheva.addressbook.Model;
 
 import androidx.annotation.NonNull;
 
@@ -9,19 +9,19 @@ import java.io.Serializable;
 public class Person implements Serializable {
 
     @SerializedName("ID")
-    String id;
+    private String id;
 
     @SerializedName("Name")
-    String name;
+    private String name;
 
     @SerializedName("Title")
-    String title;
+    private String title;
 
     @SerializedName("Email")
-    String email;
+    private String email;
 
     @SerializedName("Phone")
-    String phone;
+    private String phone;
 
     public Person(String id, String name, String title, String email, String phone) {
         this.id = id;

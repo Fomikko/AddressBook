@@ -8,27 +8,12 @@ import com.taxtelecom.arinamurasheva.addressbook.Authenticator.SharedPreferences
 
 public final class ContactListApp extends Application {
 
-    private static SharedPreferences mUserData;
-
-    private static SharedPreferencesManager sharedPreferencesManager;
-
     @Override
     public void onCreate() {
         super.onCreate();
-        mUserData = this.getSharedPreferences(
-                getString(R.string.auth_preference_file),
-                Context.MODE_PRIVATE);
 
-        sharedPreferencesManager = SharedPreferencesManager.getInstance();
+        SharedPreferencesManager.getInstance().init(this);
 
-    }
-
-    public static SharedPreferences getUserData() {
-        return mUserData;
-    }
-
-    public static SharedPreferencesManager getSharedPreferencesManager() {
-        return sharedPreferencesManager;
     }
 
 }

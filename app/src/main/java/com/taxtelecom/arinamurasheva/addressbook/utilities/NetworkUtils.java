@@ -45,11 +45,12 @@ public class NetworkUtils {
     }
 
     public static String buildContactListUrl() {
-        SharedPreferencesManager manager = ContactListApp.getSharedPreferencesManager();
+        SharedPreferencesManager manager = SharedPreferencesManager.getInstance();
 
-        String userLogin = manager.getUserLogin();
-        String userPassword = manager.getUserPassword();
+        String userLogin;
+        String userPassword;
 
+        while ((userLogin = manager.getUserLogin()).equals("") & (userPassword = manager.getUserPassword()).equals("")) {}
         return buildUrl(PATH_CL, userLogin, userPassword);
     }
 

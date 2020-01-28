@@ -1,7 +1,5 @@
 package com.taxtelecom.arinamurasheva.addressbook.Authenticator;
 
-import com.taxtelecom.arinamurasheva.addressbook.ContactListApp;
-
 public class AuthenticatorPresenter {
     private AuthenticatorActivity _view;
     private TaxtelecomAuthenticator _model;
@@ -13,8 +11,10 @@ public class AuthenticatorPresenter {
     }
 
     void onGetCheckUserDataPresence() {
-        String userLogin = ContactListApp.getSharedPreferencesManager().getUserLogin();
-        String userPassword = ContactListApp.getSharedPreferencesManager().getUserPassword();
+        SharedPreferencesManager manager = SharedPreferencesManager.getInstance();
+
+        String userLogin = manager.getUserLogin();
+        String userPassword = manager.getUserPassword();
 
         if(!userLogin.equals("") && !userPassword.equals("")) {
            _view.goToContactListView();

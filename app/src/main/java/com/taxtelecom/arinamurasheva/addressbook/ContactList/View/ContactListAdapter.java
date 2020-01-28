@@ -120,15 +120,5 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
     }
 
 
-    public static void printItemsList(List<Item> itemsList) {
-        for (Item item : itemsList) {
-            System.out.println(item.getName());
 
-            List<Item> innerItems;
-            if ((innerItems = item.getItems()) != null) {
-                System.out.println("SubItems of " + item.getName());
-                printItemsList(innerItems);
-            }
-        }
-    }
 }

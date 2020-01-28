@@ -64,7 +64,7 @@ public class TaxtelecomAuthenticator {
 
                 if (isValid) {
                     notifySubscribersSuccess();
-                    ContactListApp.getSharedPreferencesManager().saveUserData(userLogin, userPassword);
+                    SharedPreferencesManager.getInstance().saveUserData(userLogin, userPassword);
 
                 } else {
                     notifySubscribersFail(errorMessage);

@@ -2,9 +2,9 @@ package com.taxtelecom.arinamurasheva.addressbook.ContactList.Contractor;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.taxtelecom.arinamurasheva.addressbook.ContactList.Model.Department;
+import com.taxtelecom.arinamurasheva.addressbook.Model.Department;
 import com.taxtelecom.arinamurasheva.addressbook.Observer.ISubscriber;
-import com.taxtelecom.arinamurasheva.addressbook.ContactList.Model.Person;
+import com.taxtelecom.arinamurasheva.addressbook.Model.Person;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
