@@ -1,8 +1,5 @@
 package com.taxtelecom.arinamurasheva.addressbook.ContactList.Presenter;
 
-import android.util.Log;
-
-import com.taxtelecom.arinamurasheva.addressbook.Authenticator.SharedPreferencesManager;
 import com.taxtelecom.arinamurasheva.addressbook.ContactList.View.IContactListView;
 import com.taxtelecom.arinamurasheva.addressbook.ContactList.View.Item;
 import com.taxtelecom.arinamurasheva.addressbook.ContactList.Model.Department;
@@ -18,8 +15,6 @@ import java.util.List;
 
 
 public class ContactListPresenter implements IContactListPresenter, ISubscriber {
-
-    private final String TAG = "ContactListPresenter";
 
     private IContactListView _view;
     private IContactListContractor _model;
@@ -84,21 +79,9 @@ public class ContactListPresenter implements IContactListPresenter, ISubscriber 
     @Override
     public void onGetLogOutRequest() {
         ContactListApp.getSharedPreferencesManager().removeUserData();
-/*        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }*/
+
         _view.goToLoginView();
-        //SharedPreferencesManager.subscribe(this);
 
     }
-
-/*    @Override
-    public void onLoggedOut() {
-        _view.goToLoginView();
-    }*/
-
-
 
 }

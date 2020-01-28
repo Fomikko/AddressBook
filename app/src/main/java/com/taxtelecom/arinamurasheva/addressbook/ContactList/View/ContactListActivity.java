@@ -132,16 +132,8 @@ public class ContactListActivity extends AppCompatActivity implements IContactLi
         Intent mStartActivity = new Intent(
                 ContactListActivity.this,
                 AuthenticatorActivity.class);
-        int mPendingIntentId = 123456;
-        PendingIntent mPendingIntent = PendingIntent.getActivity(
-                ContactListActivity.this,
-                mPendingIntentId,
-                mStartActivity,
-                PendingIntent.FLAG_CANCEL_CURRENT);
-        AlarmManager mgr = (AlarmManager) ContactListActivity.this.getSystemService(Context.ALARM_SERVICE);
-        mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
-        System.exit(0);
 
-        //startActivity(mStartActivity);
+        mStartActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(mStartActivity);
     }
 }
