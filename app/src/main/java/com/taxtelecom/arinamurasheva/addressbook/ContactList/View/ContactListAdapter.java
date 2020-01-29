@@ -17,7 +17,7 @@ import java.util.List;
 
 public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.AddressBookAdapterViewHolder> {
 
-    private List<Item> contactList;
+    private final List<Item> mContactList = new ArrayList<>();
 
     public ContactListAdapter() {
 
@@ -69,7 +69,7 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
     @Override
     public int getItemCount() {
         try {
-            return getFlatItemsList(contactList).size();
+            return getFlatItemsList(mContactList).size();
         } catch (NullPointerException e) {
             return 0;
         }
@@ -78,7 +78,7 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
     @Override
     public void onBindViewHolder(@NonNull AddressBookAdapterViewHolder holder, int position) {
 
-        final Item contactListItemData = getFlatItemsList(contactList).get(position);
+        final Item contactListItemData = getFlatItemsList(mContactList).get(position);
 
         View.OnClickListener headerListener = new View.OnClickListener() {
             @Override
@@ -91,30 +91,105 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
         holder.mDeptTextView.setText(contactListItemData.toString());
     }
 
+    //TODO привести в порядок методы onHeaderClicked и collapseAllExceptOne
 
     private void onHeaderClicked(Item header) {
 
-        int index = getFlatItemsList(contactList).indexOf(header);
 
-        if (header.isExpanded()) {
-            header.collapse();
-            notifyItemRangeRemoved(index + 1, getFlatItemsList(header.getItems()).size());
+            int index = getFlatItemsList(mContactList).indexOf(header);
 
-        } else {
-            if (header.getItems() != null) {
-                header.expand();
-                notifyItemRangeInserted(index + 1, getFlatItemsList(header.getItems()).size());
+            if (header.isExpanded()) {
+
+                synchronized (mContactList) {
+                    header.collapse();
+
+                    List<Item> flatItemsList = getFlatItemsList(header.getItems());
+                    int numOfCollapsingItems = flatItemsList.size();
+                    notifyItemRangeRemoved(index + 1, numOfCollapsingItems);
+
+                    for (int i = 0; i < numOfCollapsingItems; i++) {
+                        Item curItem = flatItemsList.get(i);
+                        if (curItem.isExpanded()) {
+                            curItem.collapse();
+                        }
+                    }
+                }
+
+                //collapseAllExceptOne(header);
+
+
+
+            } else {
+                if (header.getItems() != null) {
+
+                    synchronized (mContactList) {
+                        header.expand();
+                        notifyItemRangeInserted(index + 1, header.getItems().size());
+                        System.out.println(header + " expanded");
+                    }
+
+                    collapseAllExceptOne(header);
+                }
+            }
+
+    }
+
+    private void collapseAllExceptOne(Item changingItem) {
+
+        synchronized (mContactList) {
+
+            List<Item> flatItemsList = getFlatItemsList(mContactList);
+            int numOfItems = flatItemsList.size();
+
+            int changingItemNestingLevel = changingItem.getNestingLevel();
+
+            for (int iterNestingLevel = changingItemNestingLevel; iterNestingLevel >= changingItemNestingLevel; iterNestingLevel--) {
+
+                for (int i = 0; i < numOfItems; i++) {
+
+                    Item curItem = flatItemsList.get(i);
+                    int curNestingLevel = curItem.getNestingLevel();
+
+                    if (curItem.isExpanded() && curNestingLevel == iterNestingLevel && !curItem.equals(changingItem)) {
+
+                        curItem.collapse();
+                        notifyItemRangeRemoved(i + 1, curItem.getItems().size());
+
+                        System.out.println(curItem + " here!!!");
+                        flatItemsList = getFlatItemsList(flatItemsList);
+                        numOfItems = flatItemsList.size();
+
+
+                    }
+                }
             }
         }
     }
 
+    public void collapseChildren(Item header) {
+
+    }
+
+/*    public List<Integer> getRoutingList(Item header) {
+
+        List<Integer> routingList = new ArrayList<>(3);
+        int numOfItems = getItemCount();
+
+        for (int i = 0; i < numOfItems; i++) {
+
+        }
+    }
+
+    private Integer getIndex(List<Integer> list, Item item) {
+
+    }*/
+
+
     /*Метод адаптирует список отделов для отображения на экране в виде раскрывающегося списка.*/
     public void setContactListData(Item item) {
 
-        List<Item> itemsList = new ArrayList<>(1);
-        itemsList.add(item);
+        mContactList.add(item);
 
-        contactList = itemsList;
         notifyDataSetChanged();
 
     }
