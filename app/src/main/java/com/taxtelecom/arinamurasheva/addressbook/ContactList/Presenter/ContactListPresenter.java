@@ -49,7 +49,7 @@ public class ContactListPresenter implements IContactListPresenter, ISubscriber 
             List<Item> itemList = new ArrayList<>(persons.size());
             for (Person p : persons) {
                 Item personItem = new Item(p.toString());
-                personItem.setNestingLevel(2000);
+                personItem.setNestingLevel(-1);
                 itemList.add(personItem);
             }
 
@@ -106,5 +106,7 @@ public class ContactListPresenter implements IContactListPresenter, ISubscriber 
         _view.goToLoginView();
 
     }
+
+
 
 }

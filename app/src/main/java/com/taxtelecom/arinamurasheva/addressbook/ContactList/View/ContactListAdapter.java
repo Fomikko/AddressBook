@@ -1,6 +1,7 @@
 package com.taxtelecom.arinamurasheva.addressbook.ContactList.View;
 
 import android.content.Context;
+import android.content.SyncAdapterType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,6 +66,12 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
         return flatItemsList;
     }
 
+    private void flattenContactList() {
+        synchronized (mContactList) {
+            mContactList.clear();
+            mContactList.addAll(getFlatItemsList(mContactList));
+        }
+    }
 
     @Override
     public int getItemCount() {
@@ -95,80 +102,72 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
 
     private void onHeaderClicked(Item header) {
 
-
-            int index = getFlatItemsList(mContactList).indexOf(header);
+        synchronized (mContactList) {
+            int headerIndex = getFlatItemsList(mContactList).indexOf(header);
 
             if (header.isExpanded()) {
-
-                synchronized (mContactList) {
-                    header.collapse();
-
-                    List<Item> flatItemsList = getFlatItemsList(header.getItems());
-                    int numOfCollapsingItems = flatItemsList.size();
-                    notifyItemRangeRemoved(index + 1, numOfCollapsingItems);
-
-                    for (int i = 0; i < numOfCollapsingItems; i++) {
-                        Item curItem = flatItemsList.get(i);
-                        if (curItem.isExpanded()) {
-                            curItem.collapse();
-                        }
-                    }
-                }
-
-                //collapseAllExceptOne(header);
-
-
+                notifyItemRangeRemoved(headerIndex + 1, getFlatItemsList(header.getItems()).size());
+                collapseWithChildren(header);
 
             } else {
+
                 if (header.getItems() != null) {
 
-                    synchronized (mContactList) {
-                        header.expand();
-                        notifyItemRangeInserted(index + 1, header.getItems().size());
-                        System.out.println(header + " expanded");
-                    }
+                    header.expand();
+                    notifyItemRangeInserted(headerIndex + 1, header.getItems().size());
 
                     collapseAllExceptOne(header);
                 }
             }
+        }
 
     }
 
-    private void collapseAllExceptOne(Item changingItem) {
+    private void collapseWithChildren(Item header) {
 
         synchronized (mContactList) {
+            header.collapse();
+
+            List<Item> childrenList;
+            if ((childrenList = header.getItems()) != null) {
+                for (Item item : childrenList) {
+                    if (item.isExpanded()) {
+                        collapseWithChildren(item);
+                    }
+                }
+            }
+
+
+        }
+
+        System.out.println("collapse with children " + header);
+    }
+
+    private void collapseAllExceptOne(Item changingItem) {
+        synchronized (mContactList) {
+
+            int changingItemNestingLevel = changingItem.getNestingLevel();
 
             List<Item> flatItemsList = getFlatItemsList(mContactList);
             int numOfItems = flatItemsList.size();
 
-            int changingItemNestingLevel = changingItem.getNestingLevel();
+            for (int i = 0; i < numOfItems; i++) {
 
-            for (int iterNestingLevel = changingItemNestingLevel; iterNestingLevel >= changingItemNestingLevel; iterNestingLevel--) {
+                Item item = flatItemsList.get(i);
 
-                for (int i = 0; i < numOfItems; i++) {
+                if (item.isExpanded() && item.getNestingLevel() == changingItemNestingLevel && !item.equals(changingItem)) {
 
-                    Item curItem = flatItemsList.get(i);
-                    int curNestingLevel = curItem.getNestingLevel();
+                    notifyItemRangeRemoved(i + 1, getFlatItemsList(item.getItems()).size());
+                    collapseWithChildren(item);
 
-                    if (curItem.isExpanded() && curNestingLevel == iterNestingLevel && !curItem.equals(changingItem)) {
-
-                        curItem.collapse();
-                        notifyItemRangeRemoved(i + 1, curItem.getItems().size());
-
-                        System.out.println(curItem + " here!!!");
-                        flatItemsList = getFlatItemsList(flatItemsList);
-                        numOfItems = flatItemsList.size();
-
-
-                    }
                 }
             }
         }
+
+        System.out.println("collapse all except one " + changingItem);
     }
 
-    public void collapseChildren(Item header) {
 
-    }
 
 /*    public List<Integer> getRoutingList(Item header) {
 
@@ -188,12 +187,28 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
     /*Метод адаптирует список отделов для отображения на экране в виде раскрывающегося списка.*/
     public void setContactListData(Item item) {
 
-        mContactList.add(item);
+        mContactList.addAll(item.getItems());
 
         notifyDataSetChanged();
 
     }
+/*
+    public List<Integer> getRoutingList(Item selectedItem) {
+        List<Integer> routingList = new ArrayList<>(5);
+        int selectedItemNestingLevel = selectedItem.getNestingLevel();
+
+        List<Item> flatItemsList = getFlatItemsList(mContactList);
+
+        int curCount = 0;
+        for (Item iterItem : flatItemsList) {
+            int iterItemnestingLevel = iterItem.getNestingLevel();
 
 
+            if (iterItemnestingLevel < selectedItemNestingLevel) {
+                curCount++;
+            }
+            if (iterItemnestingLevel)
+        }
+    }*/
 
 }

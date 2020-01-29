@@ -9,14 +9,17 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 public class NetworkUtils {
-    final static String TAXTELECOM_BASE_URL =
+    private final static String TAXTELECOM_BASE_URL =
             "https://contact.taxsee.com/Contacts.svc/";
 
-    final static String PATH_CL = "GetAll";
-    final static String PATH_AUTH = "Hello";
+    private final static String PATH_CL = "GetAll";
+    private final static String PATH_AUTH = "Hello";
+    private final static String PATH_PHOTO = "GetWPhoto";
 
-    final static String PARAM_LOGIN = "login";
-    final static String PARAM_PASSWORD = "password";
+    private final static String PARAM_LOGIN = "login";
+    private final static String PARAM_PASSWORD = "password";
+
+    final static String PARAM_ID = "id";
 
     /**
      * Строит URL для запроса к contact.taxsee.com.
@@ -45,13 +48,32 @@ public class NetworkUtils {
     }
 
     public static String buildContactListUrl() {
+
+        return buildInnerUrl(PATH_CL);
+    }
+
+    public static String buildContactPhotoUrl(String userId) {
+        Uri builtUri = Uri.parse(buildInnerUrl(PATH_PHOTO)).buildUpon()
+                .appendQueryParameter(PARAM_ID, userId)
+                .build();
+        URL url = null;
+        try {
+           url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        return url.toString();
+    }
+
+    private static String buildInnerUrl(String path) {
         SharedPreferencesManager manager = SharedPreferencesManager.getInstance();
 
         String userLogin;
         String userPassword;
 
         while ((userLogin = manager.getUserLogin()).equals("") & (userPassword = manager.getUserPassword()).equals("")) {}
-        return buildUrl(PATH_CL, userLogin, userPassword);
-    }
 
+        return buildUrl(path, userLogin, userPassword);
+
+    }
 }
