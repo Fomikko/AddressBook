@@ -1,15 +1,18 @@
 package com.taxtelecom.arinamurasheva.addressbook.ContactList.View;
 
+import android.app.Application;
 import android.content.Context;
-import android.content.SyncAdapterType;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.taxtelecom.arinamurasheva.addressbook.ContactListApp;
 import com.taxtelecom.arinamurasheva.addressbook.R;
 
 import java.util.ArrayList;
@@ -66,13 +69,6 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
         return flatItemsList;
     }
 
-    private void flattenContactList() {
-        synchronized (mContactList) {
-            mContactList.clear();
-            mContactList.addAll(getFlatItemsList(mContactList));
-        }
-    }
-
     @Override
     public int getItemCount() {
         try {
@@ -83,49 +79,90 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
     }
 
     @Override
-    public void onBindViewHolder(@NonNull AddressBookAdapterViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final AddressBookAdapterViewHolder holder, int position) {
 
-        final Item contactListItemData = getFlatItemsList(mContactList).get(position);
+        final Item itemData = getFlatItemsList(mContactList).get(position);
+
+        int itemNestingLevel = itemData.getNestingLevel();
+
+        if (itemNestingLevel == 1) {
+
+            holder.mDeptTextView.setPadding(64, 32, 64, 32);
+            holder.mDeptTextView.setTextSize(22);
+            holder.mDeptTextView.setAllCaps(true);
+            holder.mDeptTextView.setTypeface(null, Typeface.BOLD);
+
+        } else if (itemNestingLevel == 2) {
+
+            holder.mDeptTextView.setPadding(64,16,64,16);
+            holder.mDeptTextView.setTextSize(22);
+            holder.mDeptTextView.setAllCaps(false);
+            holder.mDeptTextView.setTypeface(null, Typeface.NORMAL);
+
+        } else if (itemNestingLevel == 3) {
+
+            holder.mDeptTextView.setPadding(100,16,64,16);
+            holder.mDeptTextView.setTextSize(22);
+            holder.mDeptTextView.setAllCaps(false);
+            holder.mDeptTextView.setTypeface(null, Typeface.NORMAL);
+
+        } else if (itemNestingLevel == -1) {
+
+            holder.mDeptTextView.setPadding(140,8,64,8);
+            holder.mDeptTextView.setTextSize(20);
+            holder.mDeptTextView.setAllCaps(false);
+            holder.mDeptTextView.setTypeface(null, Typeface.NORMAL);
+
+        }
 
         View.OnClickListener headerListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onHeaderClicked(contactListItemData);
+                Context context = holder.mDeptTextView.getContext();
+                onHeaderClicked(context, itemData);
             }
         };
 
+        //Context context = getApplicationContext();
+
         holder.mDeptTextView.setOnClickListener(headerListener);
-        holder.mDeptTextView.setText(contactListItemData.toString());
+        holder.mDeptTextView.setText(itemData.toString());
+
+
     }
 
-    //TODO привести в порядок методы onHeaderClicked и collapseAllExceptOne
+    private void onHeaderClicked(Context context, Item header) {
 
-    private void onHeaderClicked(Item header) {
-
-        synchronized (mContactList) {
+        //synchronized (mContactList) {
             int headerIndex = getFlatItemsList(mContactList).indexOf(header);
 
             if (header.isExpanded()) {
                 notifyItemRangeRemoved(headerIndex + 1, getFlatItemsList(header.getItems()).size());
                 collapseWithChildren(header);
 
-            } else {
-
-                if (header.getItems() != null) {
+            } else if (!header.isExpanded() && (header.getItems() != null)) {
 
                     header.expand();
                     notifyItemRangeInserted(headerIndex + 1, header.getItems().size());
 
                     collapseAllExceptOne(header);
-                }
+            } else if (header.getNestingLevel() != -1) {
+                Toast toast = Toast.makeText(
+                        context,
+                        "Отдел \u00AB" + header.getName() + "\u00BB пуст.",
+                        Toast.LENGTH_SHORT);
+                toast.show();
+
+            } else {
+
             }
-        }
+        //}
 
     }
 
     private void collapseWithChildren(Item header) {
 
-        synchronized (mContactList) {
+        //synchronized (mContactList) {
             header.collapse();
 
             List<Item> childrenList;
@@ -138,13 +175,13 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
             }
 
 
-        }
+        //}
 
-        System.out.println("collapse with children " + header);
+        System.out.println("collapse with children " + header + " LVL " + header.getNestingLevel());
     }
 
     private void collapseAllExceptOne(Item changingItem) {
-        synchronized (mContactList) {
+        //synchronized (mContactList) {
 
             int changingItemNestingLevel = changingItem.getNestingLevel();
 
@@ -162,27 +199,10 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
 
                 }
             }
-        }
+        //}
 
-        System.out.println("collapse all except one " + changingItem);
+        System.out.println("collapse all except one " + changingItem + " LVL " + changingItem.getNestingLevel());
     }
-
-
-
-/*    public List<Integer> getRoutingList(Item header) {
-
-        List<Integer> routingList = new ArrayList<>(3);
-        int numOfItems = getItemCount();
-
-        for (int i = 0; i < numOfItems; i++) {
-
-        }
-    }
-
-    private Integer getIndex(List<Integer> list, Item item) {
-
-    }*/
-
 
     /*Метод адаптирует список отделов для отображения на экране в виде раскрывающегося списка.*/
     public void setContactListData(Item item) {
@@ -192,17 +212,18 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
         notifyDataSetChanged();
 
     }
-/*
-    public List<Integer> getRoutingList(Item selectedItem) {
+
+/*    public List<Integer> getRoutingList(Item selectedItem) {
         List<Integer> routingList = new ArrayList<>(5);
         int selectedItemNestingLevel = selectedItem.getNestingLevel();
 
         List<Item> flatItemsList = getFlatItemsList(mContactList);
 
-        int curCount = 0;
+        int count = -1;
+        int curNestingLevel = 0;
+
         for (Item iterItem : flatItemsList) {
             int iterItemnestingLevel = iterItem.getNestingLevel();
-
 
             if (iterItemnestingLevel < selectedItemNestingLevel) {
                 curCount++;

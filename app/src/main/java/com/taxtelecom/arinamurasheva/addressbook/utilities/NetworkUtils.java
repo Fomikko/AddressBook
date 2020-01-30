@@ -71,7 +71,9 @@ public class NetworkUtils {
         String userLogin;
         String userPassword;
 
-        while ((userLogin = manager.getUserLogin()).equals("") & (userPassword = manager.getUserPassword()).equals("")) {}
+        while ((userLogin = manager.getUserLogin()).equals("") & (userPassword = manager.getUserPassword()).equals("")) {
+            System.out.println("запрос к SharedPreferences неудачный");
+        }
 
         return buildUrl(path, userLogin, userPassword);
 
