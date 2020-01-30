@@ -14,7 +14,7 @@ android:orientation="vertical">
     android:id="@+id/tv_contact_name"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:text="@string/contact_name"
+
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
     android:layout_alignBottom="@+id/iv_contact_photo"
@@ -27,9 +27,8 @@ android:orientation="vertical">
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:text="@string/lbl_contact_title"
-    android:layout_below="@+id/iv_contact_photo"
+    android:layout_alignBaseline="@+id/tv_contact_title"
     android:layout_marginTop="20dp"
-    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
     android:layout_marginLeft="16dp"
     android:layout_marginStart="16dp"
     android:layout_marginRight="16dp"/>
@@ -38,16 +37,19 @@ android:orientation="vertical">
     android:id="@+id/tv_contact_title"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:layout_below="@+id/iv_contact_photo"
     android:layout_marginLeft="16dp"
+    android:layout_marginRight="16dp"
     android:layout_toEndOf="@+id/tv_lbl_contact_title"
     android:layout_toRightOf="@+id/tv_lbl_contact_title"
-    android:layout_alignBaseline="@+id/tv_lbl_contact_title"
-    android:text="@string/no_contact_title"/>
+
+    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+    />
 
 <View
     android:id="@+id/divider1"
     style="@style/divider"
-    android:layout_below="@id/tv_lbl_contact_title" />
+    android:layout_below="@id/tv_contact_title" />
 
 <TextView
     android:id="@+id/tv_lbl_contact_email"
@@ -55,19 +57,19 @@ android:orientation="vertical">
     android:layout_height="wrap_content"
     android:text="@string/lbl_contact_email"
     android:layout_below="@+id/divider1"
-    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
     android:layout_alignLeft="@id/tv_lbl_contact_title"
     android:layout_alignStart="@id/tv_lbl_contact_title"/>
 
 <TextView
-    android:id="@+id/contact_email"
+    android:id="@+id/tv_contact_email"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_toEndOf="@+id/tv_lbl_contact_email"
     android:layout_toRightOf="@+id/tv_lbl_contact_email"
     android:layout_alignBaseline="@+id/tv_lbl_contact_email"
     android:layout_alignLeft="@+id/tv_contact_title"
-    android:text="@string/no_contact_email"/>
+    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+    />
 
 <View
     android:id="@+id/divider2"
@@ -80,18 +82,19 @@ android:orientation="vertical">
     android:layout_height="wrap_content"
     android:text="@string/lbl_contact_phone"
     android:layout_below="@+id/divider2"
-    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
     android:layout_alignLeft="@id/tv_lbl_contact_title"
     android:layout_alignStart="@id/tv_lbl_contact_title"/>
 
 <TextView
-    android:id="@+id/contact_phone"
+    android:id="@+id/tv_contact_phone"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_toEndOf="@+id/tv_lbl_contact_phone"
     android:layout_toRightOf="@+id/tv_lbl_contact_phone"
     android:layout_alignBaseline="@+id/tv_lbl_contact_phone"
     android:layout_alignLeft="@+id/tv_contact_title"
-    android:text="@string/no_contact_phone"/>
+    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+
+    />
 
 </RelativeLayout>

@@ -10,6 +10,7 @@ import com.taxtelecom.arinamurasheva.addressbook.Model.Person;
 import com.taxtelecom.arinamurasheva.addressbook.Observer.ISubscriber;
 import com.taxtelecom.arinamurasheva.addressbook.utilities.NetworkUtils;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +33,7 @@ public class ContactListPresenter implements IContactListPresenter, ISubscriber 
         _model.fetchContactListData(contactListRequestUrl);
 
         _model.subscribe(this);
+
     }
 
 
@@ -107,6 +109,11 @@ public class ContactListPresenter implements IContactListPresenter, ISubscriber 
 
     }
 
+    @Override
+    public void onGetContactInfoRequest(List<Integer> routingList) {
 
+        Person person = _model.getUserId(routingList);
+        _view.goToContactView(person);
 
+    }
 }

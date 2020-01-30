@@ -12,6 +12,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.taxtelecom.arinamurasheva.addressbook.Contact.ContactActivity;
 import com.taxtelecom.arinamurasheva.addressbook.ContactListApp;
 import com.taxtelecom.arinamurasheva.addressbook.R;
 
@@ -22,6 +23,8 @@ import java.util.List;
 public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.AddressBookAdapterViewHolder> {
 
     private final List<Item> mContactList = new ArrayList<>();
+
+    ContactListActivity listener;
 
     public ContactListAdapter() {
 
@@ -35,6 +38,10 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
             mDeptTextView = view.findViewById(R.id.tv_dept_name);
         }
 
+    }
+
+    public void setUserInfoListener(ContactListActivity activity) {
+        listener = activity;
     }
 
     @NonNull
@@ -154,7 +161,8 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
                 toast.show();
 
             } else {
-
+                List<Integer> routingList = getRoutingList(headerIndex);
+                listener.requestContactInfo(routingList);
             }
         //}
 
@@ -177,7 +185,7 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
 
         //}
 
-        System.out.println("collapse with children " + header + " LVL " + header.getNestingLevel());
+        //System.out.println("collapse with children " + header + " LVL " + header.getNestingLevel());
     }
 
     private void collapseAllExceptOne(Item changingItem) {
@@ -201,11 +209,11 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
             }
         //}
 
-        System.out.println("collapse all except one " + changingItem + " LVL " + changingItem.getNestingLevel());
+        //System.out.println("collapse all except one " + changingItem + " LVL " + changingItem.getNestingLevel());
     }
 
     /*Метод адаптирует список отделов для отображения на экране в виде раскрывающегося списка.*/
-    public void setContactListData(Item item) {
+    void setContactListData(Item item) {
 
         mContactList.addAll(item.getItems());
 
@@ -213,23 +221,36 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
 
     }
 
-/*    public List<Integer> getRoutingList(Item selectedItem) {
+    private List<Integer> getRoutingList(int headerIndex) {
+
+        System.out.println("Header Index = " + headerIndex);
         List<Integer> routingList = new ArrayList<>(5);
-        int selectedItemNestingLevel = selectedItem.getNestingLevel();
 
         List<Item> flatItemsList = getFlatItemsList(mContactList);
 
         int count = -1;
-        int curNestingLevel = 0;
+        int curNestingLevel;
+        int bufferNestingLevel = 1;
 
-        for (Item iterItem : flatItemsList) {
-            int iterItemnestingLevel = iterItem.getNestingLevel();
+        for (int i = 0; i <= headerIndex; i++) {
 
-            if (iterItemnestingLevel < selectedItemNestingLevel) {
-                curCount++;
+            Item iterItem = flatItemsList.get(i);
+
+            curNestingLevel = iterItem.getNestingLevel();
+
+            if (curNestingLevel == bufferNestingLevel) {
+                count++;
+            } else {
+                bufferNestingLevel= curNestingLevel;
+
+                routingList.add(count);
+                count = 0;
             }
-            if (iterItemnestingLevel)
         }
-    }*/
+
+        routingList.add(count);
+
+        return routingList;
+    }
 
 }

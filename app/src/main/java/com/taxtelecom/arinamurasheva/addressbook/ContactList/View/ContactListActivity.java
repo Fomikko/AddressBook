@@ -14,9 +14,14 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.taxtelecom.arinamurasheva.addressbook.Authenticator.AuthenticatorActivity;
+import com.taxtelecom.arinamurasheva.addressbook.Contact.ContactActivity;
 import com.taxtelecom.arinamurasheva.addressbook.ContactList.Presenter.IContactListPresenter;
 import com.taxtelecom.arinamurasheva.addressbook.ContactList.Presenter.ContactListPresenter;
+import com.taxtelecom.arinamurasheva.addressbook.Model.Person;
 import com.taxtelecom.arinamurasheva.addressbook.R;
+
+import java.io.Serializable;
+import java.util.List;
 
 public class ContactListActivity extends AppCompatActivity implements IContactListView {
 
@@ -56,6 +61,8 @@ public class ContactListActivity extends AppCompatActivity implements IContactLi
         mRecyclerView.setHasFixedSize(true);
 
         mContactListAdapter = new ContactListAdapter();
+
+        mContactListAdapter.setUserInfoListener(this);
 
         mRecyclerView.setAdapter(mContactListAdapter);
 
@@ -132,4 +139,20 @@ public class ContactListActivity extends AppCompatActivity implements IContactLi
         startActivity(mStartActivity);
     }
 
+    @Override
+    public void goToContactView(Person person) {
+        Intent mStartActivity = new Intent(
+                ContactListActivity.this,
+                ContactActivity.class);
+        mStartActivity.putExtra("person", person);
+
+        //mStartActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(mStartActivity);
+    }
+
+    @Override
+    public void requestContactInfo(List<Integer> routingList) {
+        presenter.onGetContactInfoRequest(routingList);
+
+    }
 }

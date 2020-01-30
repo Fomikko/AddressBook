@@ -2,6 +2,7 @@ package com.taxtelecom.arinamurasheva.addressbook.ContactList.Contractor;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.taxtelecom.arinamurasheva.addressbook.ContactList.Presenter.ContactListPresenter;
 import com.taxtelecom.arinamurasheva.addressbook.Model.Department;
 import com.taxtelecom.arinamurasheva.addressbook.Observer.ISubscriber;
 import com.taxtelecom.arinamurasheva.addressbook.Model.Person;
@@ -27,6 +28,8 @@ public class ContactListContractor implements IContactListContractor {
     private Department rootDepartment;
 
     private final List<ISubscriber> jsonResponseSubscribers = new ArrayList<>();
+
+    //private final List<ContactListPresenter> userInfoSubscribers = new ArrayList<>();
 
     @Override
     public Department getRootDepartment() {
@@ -219,13 +222,6 @@ public class ContactListContractor implements IContactListContractor {
     }
 
     @Override
-    public void unsubscribe(ISubscriber subscriber) {
-        synchronized (jsonResponseSubscribers) {
-            this.jsonResponseSubscribers.remove(subscriber);
-        }
-    }
-
-    @Override
     public void notifySubscribers() {
         synchronized (jsonResponseSubscribers) {
             for (ISubscriber subscriber : jsonResponseSubscribers) {
@@ -234,4 +230,41 @@ public class ContactListContractor implements IContactListContractor {
         }
     }
 
+    @Override
+    public Person getUserId(List<Integer> routingList) {
+
+        int listSize = routingList.size();
+        Department bufferDept = rootDepartment;
+
+        System.out.println("ROUTING LIST");
+        for (Integer integer : routingList) {
+            System.out.println(integer);
+        }
+
+        for (int i = 0; i < listSize - 1; i++) {
+            int curNum = routingList.get(i);
+
+            bufferDept = bufferDept.getDepartments().get(curNum);
+            System.out.println("bufferDept " + bufferDept);
+
+        }
+
+        Person person = (bufferDept.getEmployees()).get(routingList.get(listSize - 1));
+
+        System.out.println("PERSON " + person.getId());
+
+        return person;
+
+    }
+
+
+    @Override
+    public void subscribeFotUserInfo() {
+
+    }
+
+    @Override
+    public void notifyUserInfo() {
+
+    }
 }
