@@ -1,6 +1,5 @@
 package com.taxtelecom.arinamurasheva.addressbook.ContactList.View;
 
-import android.app.Application;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
@@ -12,8 +11,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.taxtelecom.arinamurasheva.addressbook.Contact.ContactActivity;
-import com.taxtelecom.arinamurasheva.addressbook.ContactListApp;
 import com.taxtelecom.arinamurasheva.addressbook.R;
 
 import java.util.ArrayList;
@@ -24,7 +21,7 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
 
     private final List<Item> mContactList = new ArrayList<>();
 
-    ContactListActivity listener;
+    private ContactListActivity listener;
 
     public ContactListAdapter() {
 

@@ -8,16 +8,17 @@ android:orientation="vertical">
     android:id="@+id/iv_contact_photo"
     android:layout_width="match_parent"
     android:layout_height="180dp"
+    android:padding="16dp"
     android:contentDescription="@string/contact_photo_descr" />
 
 <TextView
     android:id="@+id/tv_contact_name"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-
+    android:paddingTop="16dp"
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
-    android:layout_alignBottom="@+id/iv_contact_photo"
+    android:layout_below="@+id/iv_contact_photo"
     android:paddingBottom="16dp"
     android:textAppearance="@style/TextAppearance.AppCompat.Headline"
     android:textAlignment="center" />
@@ -37,14 +38,12 @@ android:orientation="vertical">
     android:id="@+id/tv_contact_title"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_below="@+id/iv_contact_photo"
+    android:layout_below="@+id/tv_contact_name"
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
     android:layout_toEndOf="@+id/tv_lbl_contact_title"
     android:layout_toRightOf="@+id/tv_lbl_contact_title"
-
-    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-    />
+    android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
 <View
     android:id="@+id/divider1"

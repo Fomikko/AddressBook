@@ -6,6 +6,7 @@ import com.taxtelecom.arinamurasheva.addressbook.Authenticator.SharedPreferences
 import com.taxtelecom.arinamurasheva.addressbook.ContactListApp;
 
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 
 public class NetworkUtils {
@@ -52,13 +53,13 @@ public class NetworkUtils {
         return buildInnerUrl(PATH_CL);
     }
 
-    public static String buildContactPhotoUrl(String userId) {
+    public static String buildContactPhotoUri(String userId) {
         Uri builtUri = Uri.parse(buildInnerUrl(PATH_PHOTO)).buildUpon()
                 .appendQueryParameter(PARAM_ID, userId)
                 .build();
         URL url = null;
         try {
-           url = new URL(builtUri.toString());
+            url = new URL(builtUri.toString());
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }

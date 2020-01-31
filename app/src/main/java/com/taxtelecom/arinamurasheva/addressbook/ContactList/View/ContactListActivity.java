@@ -20,7 +20,6 @@ import com.taxtelecom.arinamurasheva.addressbook.ContactList.Presenter.ContactLi
 import com.taxtelecom.arinamurasheva.addressbook.Model.Person;
 import com.taxtelecom.arinamurasheva.addressbook.R;
 
-import java.io.Serializable;
 import java.util.List;
 
 public class ContactListActivity extends AppCompatActivity implements IContactListView {
