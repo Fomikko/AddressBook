@@ -1,15 +1,14 @@
-package com.taxtelecom.arinamurasheva.addressbook.utilities;
+package com.taxtelecom.arinamurasheva.addressbook;
 
 import android.net.Uri;
 
 import com.taxtelecom.arinamurasheva.addressbook.Authenticator.SharedPreferencesManager;
-import com.taxtelecom.arinamurasheva.addressbook.ContactListApp;
 
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
 
-public class NetworkUtils {
+public class UrlBuilder {
+
     private final static String TAXTELECOM_BASE_URL =
             "https://contact.taxsee.com/Contacts.svc/";
 
@@ -20,7 +19,7 @@ public class NetworkUtils {
     private final static String PARAM_LOGIN = "login";
     private final static String PARAM_PASSWORD = "password";
 
-    final static String PARAM_ID = "id";
+    private final static String PARAM_ID = "id";
 
     /**
      * Строит URL для запроса к contact.taxsee.com.
@@ -73,7 +72,7 @@ public class NetworkUtils {
         String userPassword;
 
         while ((userLogin = manager.getUserLogin()).equals("") & (userPassword = manager.getUserPassword()).equals("")) {
-            System.out.println("запрос к SharedPreferences неудачный");
+            System.out.println("нет сохраненных логина и пароля");
         }
 
         return buildUrl(path, userLogin, userPassword);

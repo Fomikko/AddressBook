@@ -57,20 +57,6 @@ public final class SharedPreferencesManager {
         editor.remove(USER_LOGIN);
         editor.remove(USER_PASSWORD);
         editor.apply();
-        //notifyUserCredentialsRemoved();
     }
 
-/*    public static void subscribe(ContactListPresenter subscriber) {
-        synchronized (subscribers){
-            subscribers.add(subscriber);
-        }
-    }*/
-
-/*    public static void notifyUserCredentialsRemoved() {
-        synchronized (subscribers) {
-            for (ContactListPresenter subscriber : subscribers) {
-                subscriber.onLoggedOut();
-            }
-        }
-    }*/
 }

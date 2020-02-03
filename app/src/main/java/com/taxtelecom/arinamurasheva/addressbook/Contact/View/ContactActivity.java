@@ -1,4 +1,4 @@
-package com.taxtelecom.arinamurasheva.addressbook.Contact;
+package com.taxtelecom.arinamurasheva.addressbook.Contact.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -11,10 +11,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.taxtelecom.arinamurasheva.addressbook.Contact.Presenter.ContactPresenter;
 import com.taxtelecom.arinamurasheva.addressbook.Model.Person;
 import com.taxtelecom.arinamurasheva.addressbook.R;
 
-public class ContactActivity extends AppCompatActivity {
+public class ContactActivity extends AppCompatActivity implements IContactView {
 
     ContactPresenter presenter;
 
@@ -72,32 +73,32 @@ public class ContactActivity extends AppCompatActivity {
 
         Person person = (Person) getIntent().getSerializableExtra("person");
 
-        String personName;
-        String personTitle;
-        String personEmail;
-        String personPhone;
+        String contactName;
+        String contactTitle;
+        String contactEmail;
+        String contactPhone;
 
-        requestPersonPhoto(person.getId());
+        requestContactPhoto(person.getId());
 
-        personName = person.getId() + " " + person.getName();
-        mContactName.setText(personName);
+        contactName = person.getId() + " " + person.getName();
+        mContactName.setText(contactName);
 
-        if ((personTitle = person.getTitle()) != null) {
-            mContactTitle.setText(personTitle);
+        if ((contactTitle = person.getTitle()) != null) {
+            mContactTitle.setText(contactTitle);
 
         } else {
             mContactTitle.setText(getString(R.string.no_contact_title));
         }
 
-        if ((personEmail = person.getEmail()) != null) {
-            mContactEmail.setText(personEmail);
+        if ((contactEmail = person.getEmail()) != null) {
+            mContactEmail.setText(contactEmail);
 
         } else {
             mContactEmail.setText(getString(R.string.no_contact_email));
         }
 
-        if ((personPhone = person.getPhone()) != null) {
-            mContactPhone.setText(personPhone);
+        if ((contactPhone = person.getPhone()) != null) {
+            mContactPhone.setText(contactPhone);
 
         } else {
             mContactPhone.setText(getString(R.string.no_contact_phone));
@@ -105,6 +106,18 @@ public class ContactActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void setContactPhoto(final Bitmap contactPhoto) {
+        ContactActivity.this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mContactPhoto.setImageBitmap(contactPhoto);
+
+            }
+        });
+    }
+
+    @Override
     public void onEmailClicked(View view) {
 
         CharSequence personEmail = mContactEmail.getText();
@@ -125,9 +138,9 @@ public class ContactActivity extends AppCompatActivity {
 
             }
         }
-
     }
 
+    @Override
     public void onPhoneClicked(View view) {
 
         String personPhone = mContactPhone.getText().toString();
@@ -138,6 +151,7 @@ public class ContactActivity extends AppCompatActivity {
             Intent dialIntent = new Intent(Intent.ACTION_DIAL, Uri.parse(dial));
 
             try {
+
                 startActivity(Intent.createChooser(dialIntent, "Звонок..."));
 
             } catch (android.content.ActivityNotFoundException ex) {
@@ -149,19 +163,11 @@ public class ContactActivity extends AppCompatActivity {
 
     }
 
-    public void requestPersonPhoto(String personId) {
-        presenter.onGetPhotoRequest(personId);
+    @Override
+    public void requestContactPhoto(String contactId) {
+        presenter.onGetPhotoRequest(contactId);
     }
 
-    public void setPersonPhoto(final Bitmap personPhoto) {
-        System.out.println("received user photo");
-        ContactActivity.this.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mContactPhoto.setImageBitmap(personPhoto);
 
-            }
-        });
-    }
 
 }

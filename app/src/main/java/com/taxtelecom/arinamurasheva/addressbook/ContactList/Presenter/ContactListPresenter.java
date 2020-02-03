@@ -4,35 +4,67 @@ import com.taxtelecom.arinamurasheva.addressbook.Authenticator.SharedPreferences
 import com.taxtelecom.arinamurasheva.addressbook.ContactList.View.IContactListView;
 import com.taxtelecom.arinamurasheva.addressbook.ContactList.View.Item;
 import com.taxtelecom.arinamurasheva.addressbook.Model.Department;
-import com.taxtelecom.arinamurasheva.addressbook.ContactList.Contractor.IContactListContractor;
-import com.taxtelecom.arinamurasheva.addressbook.ContactList.Contractor.ContactListContractor;
+import com.taxtelecom.arinamurasheva.addressbook.ContactList.Interactor.IContactListInteractor;
+import com.taxtelecom.arinamurasheva.addressbook.ContactList.Interactor.ContactListInteractor;
 import com.taxtelecom.arinamurasheva.addressbook.Model.Person;
-import com.taxtelecom.arinamurasheva.addressbook.Observer.ISubscriber;
-import com.taxtelecom.arinamurasheva.addressbook.utilities.NetworkUtils;
+import com.taxtelecom.arinamurasheva.addressbook.Observer.IEventSubscriber;
+import com.taxtelecom.arinamurasheva.addressbook.UrlBuilder;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class ContactListPresenter implements IContactListPresenter, ISubscriber {
+public class ContactListPresenter implements IContactListPresenter, IEventSubscriber {
 
     private IContactListView _view;
-    private IContactListContractor _model;
+    private IContactListInteractor _model;
 
     public ContactListPresenter(IContactListView view) {
         _view = view;
-        _model = new ContactListContractor();
+        _model = new ContactListInteractor();
 
     }
 
     @Override
     public void onGetDataLoadRequest() {
-        String contactListRequestUrl = NetworkUtils.buildContactListUrl();
 
-        _model.fetchContactListData(contactListRequestUrl);
+        _model.fetchContactListData();
 
-        _model.subscribe(this);
+        _model.events.subscribe(_model.CONTACT_LIST, this);
+
+        _view.showLoadingIndicator();
+
+    }
+
+    @Override
+    public void updateSuccess(String eventType) {
+
+        Item deptItem = deptToItem(_model.getContactListData());
+
+        _view.showContactDataView();
+        _view.setContactListLayout(deptItem);
+
+    }
+
+    @Override
+    public void updateFail(String eventType) {
+        _view.showErrorMessage();
+    }
+
+    @Override
+    public void onGetLogOutRequest() {
+
+        SharedPreferencesManager.getInstance().removeUserData();
+
+        _view.goToLoginView();
+
+    }
+
+    @Override
+    public void onGetContactInfoRequest(List<Integer> routingList) {
+
+        Person person = _model.getContact(routingList);
+        _view.goToContactView(person);
 
     }
 
@@ -74,46 +106,4 @@ public class ContactListPresenter implements IContactListPresenter, ISubscriber 
 
     }
 
-    @Override
-    public void update() {
-        Department dept;
-
-        if ((dept = _model.getRootDepartment()) != null) {
-
-            Item deptItem = deptToItem(dept);
-
-            _view.showContactDataView();
-            _view.setContactListLayout(deptItem);
-
-            //printItemsList(deptItem);
-        }
-    }
-
-    public static void printItemsList(Item item) {
-        System.out.println(item.getName() + " LVL " + item.getNestingLevel());
-
-        List<Item> innerItems;
-        if ((innerItems = item.getItems()) != null) {
-            System.out.println("Внутрянка " + item.getName());
-            for (Item i : innerItems) {
-                printItemsList(i);
-            }
-        }
-    }
-
-    @Override
-    public void onGetLogOutRequest() {
-        SharedPreferencesManager.getInstance().removeUserData();
-
-        _view.goToLoginView();
-
-    }
-
-    @Override
-    public void onGetContactInfoRequest(List<Integer> routingList) {
-
-        Person person = _model.getUserId(routingList);
-        _view.goToContactView(person);
-
-    }
 }

@@ -1,9 +1,6 @@
-package com.taxtelecom.arinamurasheva.addressbook.Authenticator;
+package com.taxtelecom.arinamurasheva.addressbook.Authenticator.View;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -11,12 +8,14 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.taxtelecom.arinamurasheva.addressbook.Authenticator.Presenter.AuthenticatorPresenter;
+import com.taxtelecom.arinamurasheva.addressbook.Authenticator.Presenter.IAuthenticatorPresenter;
 import com.taxtelecom.arinamurasheva.addressbook.ContactList.View.ContactListActivity;
 import com.taxtelecom.arinamurasheva.addressbook.R;
 
-public class AuthenticatorActivity extends AppCompatActivity {
+public class AuthenticatorActivity extends AppCompatActivity implements IAuthenticatorView {
 
-    AuthenticatorPresenter presenter;
+    IAuthenticatorPresenter presenter;
 
     private EditText mLoginEditText;
     private EditText mPasswordEditText;
@@ -49,6 +48,7 @@ public class AuthenticatorActivity extends AppCompatActivity {
 
     }
 
+    @Override
     public void goToContactListView() {
         Intent intent = new Intent(
                 AuthenticatorActivity.this,
@@ -57,11 +57,13 @@ public class AuthenticatorActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    @Override
     public void checkUserDataPresence() {
         presenter.onGetCheckUserDataPresence();
 
     }
 
+    @Override
     public void showErrorMessage(final String message) {
 
         AuthenticatorActivity.this.runOnUiThread(new Runnable() {
