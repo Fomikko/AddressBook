@@ -11,6 +11,8 @@ import com.taxtelecom.arinamurasheva.addressbook.UrlBuilder;
 import java.io.IOException;
 import java.util.List;
 
+import okhttp3.Response;
+
 public class ContactListInteractor implements IContactListInteractor {
 
     private Department mContactListData;
@@ -31,20 +33,30 @@ public class ContactListInteractor implements IContactListInteractor {
     @Override
     public void fetchContactListData() {
 
-        String url = UrlBuilder.buildContactListUrl();
-        IDataFetcher dataFetcher = new JsonDataFetcher(url);
+        final String url = UrlBuilder.buildContactListUrl();
 
-        try {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
 
-            mContactListData = getDeptFromJson(dataFetcher.fetchData(url));
-            events.notifySuccess(IContactListInteractor.CONTACT_LIST);
+                Response response = JsonDataFetcher.getInstance().fetchData(url);
 
-        } catch (IOException e) {
+                String responseJsonString = null;
+                try {
+                    responseJsonString = response.body().string();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
-            e.printStackTrace();
-            events.notifyFail(IContactListInteractor.CONTACT_LIST);
-        }
+                if (responseJsonString != null) {
+                    mContactListData = getDeptFromJson(responseJsonString);
+                    events.notifySuccess(IContactListInteractor.CONTACT_LIST);
+                } else {
+                    events.notifyFail(IContactListInteractor.CONTACT_LIST);
 
+                }
+            }
+        }).start();
     }
 
     /*Метод с помощью routingList позволяет найти заданного в обходном листе человека.*/
@@ -54,24 +66,15 @@ public class ContactListInteractor implements IContactListInteractor {
         int listSize = routingList.size();
         Department bufferDept = mContactListData;
 
-        System.out.println("ROUTING LIST");
-        for (Integer integer : routingList) {
-            System.out.println(integer);
-        }
-
         for (int i = 0; i < listSize - 1; i++) {
+
             int curNum = routingList.get(i);
 
             bufferDept = bufferDept.getDepartments().get(curNum);
-            System.out.println("bufferDept " + bufferDept);
 
         }
 
-        Person person = (bufferDept.getEmployees()).get(routingList.get(listSize - 1));
-
-        System.out.println("PERSON " + person.getId());
-
-        return person;
+        return (bufferDept.getEmployees()).get(routingList.get(listSize - 1));
 
     }
 

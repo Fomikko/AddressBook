@@ -27,12 +27,10 @@ public class ContactListPresenter implements IContactListPresenter, IEventSubscr
 
     @Override
     public void onGetDataLoadRequest() {
-
+        _model.events.subscribe(_model.CONTACT_LIST, this);
         _model.fetchContactListData();
 
-        _model.events.subscribe(_model.CONTACT_LIST, this);
-
-        _view.showLoadingIndicator();
+        //_view.showLoadingIndicator();
 
     }
 

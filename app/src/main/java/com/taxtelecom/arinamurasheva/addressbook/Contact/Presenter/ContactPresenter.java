@@ -29,7 +29,7 @@ public class ContactPresenter implements IContactPresenter, IEventSubscriber {
 
     @Override
     public void onGetPhotoRequest(String personId) {
-        _model.fetchContactPhoto(UrlBuilder.buildContactPhotoUri(personId));
-        _model.events.subscribe(_model.CONTACT_DATA, this);
+        _model.events.subscribe(_model.CONTACT_PHOTO, this);
+        _model.fetchContactPhoto(personId);
     }
 }

@@ -52,7 +52,7 @@ public class UrlBuilder {
         return buildInnerUrl(PATH_CL);
     }
 
-    public static String buildContactPhotoUri(String userId) {
+    public static String buildContactPhotoUrl(String userId) {
         Uri builtUri = Uri.parse(buildInnerUrl(PATH_PHOTO)).buildUpon()
                 .appendQueryParameter(PARAM_ID, userId)
                 .build();
@@ -62,6 +62,7 @@ public class UrlBuilder {
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
+        System.out.println("in builder " + url.toString());
         return url.toString();
     }
 

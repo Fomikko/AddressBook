@@ -5,16 +5,11 @@ import com.taxtelecom.arinamurasheva.addressbook.IDataFetcher;
 import com.taxtelecom.arinamurasheva.addressbook.JsonDataFetcher;
 import com.taxtelecom.arinamurasheva.addressbook.UrlBuilder;
 
-import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
 import okhttp3.Response;
 
 public class AuthenticatorInteractor implements IAuthenticatorInteractor {
@@ -22,37 +17,40 @@ public class AuthenticatorInteractor implements IAuthenticatorInteractor {
     private String errorMessage;
 
     @Override
-    public void confirmCredentials(String userLogin, String userPassword) {
+    public void confirmCredentials(final String userLogin, final String userPassword) {
 
-        String url = UrlBuilder.buildAuthUrl(userLogin, userPassword);
-
-        IDataFetcher dataFetcher = new JsonDataFetcher(url);
+        final String url = UrlBuilder.buildAuthUrl(userLogin, userPassword);
 
         final String MESSAGE = "Message";
         final String SUCCESS = "Success";
 
-        boolean isValid = false;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Response response = JsonDataFetcher.getInstance().fetchData(url);
+                try {
+                    String responseJsonString = response.body().string();
+                    JSONObject authJsonObject = new JSONObject(responseJsonString);
 
-        try {
-            String responseJsonString = dataFetcher.fetchData(url);
-            JSONObject authJsonObject = new JSONObject(responseJsonString);
+                    boolean isValid = authJsonObject.getBoolean(SUCCESS);
+                    errorMessage = authJsonObject.getString(MESSAGE);
 
-            isValid = authJsonObject.getBoolean(SUCCESS);
-            errorMessage = authJsonObject.getString(MESSAGE);
+                    if (isValid) {
+                        events.notifySuccess(AUTH);
+                        SharedPreferencesManager.getInstance().saveUserData(userLogin, userPassword);
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+                    } else {
+                        events.notifyFail(AUTH);
+                    }
 
-        if (isValid) {
-            events.notifySuccess(AUTH);
-            SharedPreferencesManager.getInstance().saveUserData(userLogin, userPassword);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
 
-        } else {
-            events.notifyFail(AUTH);
-        }
     }
 
     @Override

@@ -1,5 +1,7 @@
 package com.taxtelecom.arinamurasheva.addressbook;
 
+import com.taxtelecom.arinamurasheva.addressbook.Authenticator.SharedPreferencesManager;
+
 import java.io.IOException;
 
 import okhttp3.OkHttpClient;
@@ -8,46 +10,42 @@ import okhttp3.Response;
 
 public class JsonDataFetcher implements IDataFetcher {
 
-    private final OkHttpClient client = new OkHttpClient();
+    private static JsonDataFetcher instance;
 
-    private String url;
+    private JsonDataFetcher() {
 
-    public JsonDataFetcher(String url) {
-        this.url = url;
+    }
+
+    public static synchronized JsonDataFetcher getInstance() {
+        if (instance == null) {
+            instance = new JsonDataFetcher();
+        }
+
+        return instance;
     }
 
     @Override
-    public String fetchData(String url) {
-        return dataFetcherThread();
-    }
+    public Response fetchData(String url) {
 
-    private String dataFetcherThread() {
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
 
-        final String responseString = "";
+        try {
+            Response response = client.newCall(request).execute();
 
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Request request = new Request.Builder()
-                        .url(url)
-                        .build();
-
-                try {
-                    Response response = client.newCall(request).execute();
-
-                    if (response.isSuccessful()) {
-                        responseString.concat(response.body().string());
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            if (response.isSuccessful()) {
+                return response;
             }
-        });
 
-        //TODO Это не будет работать. Переделать для работы в бэке.
-        thread.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
 
-        return responseString;
+        return null;
     }
+
 
 }

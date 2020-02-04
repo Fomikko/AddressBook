@@ -34,8 +34,8 @@ public class AuthenticatorPresenter implements IAuthenticatorPresenter, IEventSu
 
     @Override
     public void onGetLogin(String userLogin, String userPassword) {
-        _model.confirmCredentials(userLogin, userPassword);
         _model.events.subscribe(IAuthenticatorInteractor.AUTH, this);
+        _model.confirmCredentials(userLogin, userPassword);
 
     }
 

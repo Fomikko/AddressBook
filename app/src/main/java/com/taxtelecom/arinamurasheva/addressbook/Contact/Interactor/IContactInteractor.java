@@ -5,9 +5,9 @@ import android.graphics.Bitmap;
 import com.taxtelecom.arinamurasheva.addressbook.Observer.EventManager;
 
 public interface IContactInteractor {
-    String CONTACT_DATA = "contact data";
+    String CONTACT_PHOTO = "contact [hoto";
 
-    EventManager events = new EventManager(CONTACT_DATA);
+    EventManager events = new EventManager(CONTACT_PHOTO);
 
     void fetchContactPhoto(String contactId);
     Bitmap getContactPhoto();

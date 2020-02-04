@@ -3,11 +3,12 @@ package com.taxtelecom.arinamurasheva.addressbook.Contact.Interactor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
-import com.taxtelecom.arinamurasheva.addressbook.IDataFetcher;
 import com.taxtelecom.arinamurasheva.addressbook.JsonDataFetcher;
 import com.taxtelecom.arinamurasheva.addressbook.UrlBuilder;
 
-import java.io.IOException;
+import java.io.InputStream;
+
+import okhttp3.Response;
 
 public class ContactInteractor implements IContactInteractor {
 
@@ -16,16 +17,22 @@ public class ContactInteractor implements IContactInteractor {
     @Override
     public void fetchContactPhoto(String contactId) {
 
-        String url = UrlBuilder.buildContactPhotoUri(contactId);
-        IDataFetcher dataFetcher = new JsonDataFetcher(url);
+        final String url = UrlBuilder.buildContactPhotoUrl(contactId);
 
-        try {
-            mPersonPhoto = BitmapFactory.decodeFile(dataFetcher.fetchData(url));
-            events.notifySuccess(IContactInteractor.CONTACT_DATA);
-        } catch (IOException e) {
-            e.printStackTrace();
-            events.notifyFail(IContactInteractor.CONTACT_DATA);
-        }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Response response = JsonDataFetcher.getInstance().fetchData(url);
+
+                InputStream inputStream = response.body().byteStream();
+                mPersonPhoto = BitmapFactory.decodeStream(inputStream);
+
+                events.notifySuccess(IContactInteractor.CONTACT_PHOTO);
+
+                //events.notifyFail(IContactInteractor.CONTACT_PHOTO);
+
+            }
+        }).start();
     }
 
     @Override
