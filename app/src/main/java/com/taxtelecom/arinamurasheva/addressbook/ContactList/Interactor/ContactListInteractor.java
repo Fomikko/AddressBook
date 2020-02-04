@@ -5,7 +5,6 @@ import com.google.gson.GsonBuilder;
 import com.taxtelecom.arinamurasheva.addressbook.JsonDataFetcher;
 import com.taxtelecom.arinamurasheva.addressbook.Model.Department;
 import com.taxtelecom.arinamurasheva.addressbook.Model.Person;
-import com.taxtelecom.arinamurasheva.addressbook.IDataFetcher;
 import com.taxtelecom.arinamurasheva.addressbook.UrlBuilder;
 
 import java.io.IOException;

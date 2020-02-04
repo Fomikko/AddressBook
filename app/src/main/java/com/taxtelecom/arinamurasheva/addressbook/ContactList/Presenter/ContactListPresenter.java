@@ -30,7 +30,7 @@ public class ContactListPresenter implements IContactListPresenter, IEventSubscr
         _model.events.subscribe(_model.CONTACT_LIST, this);
         _model.fetchContactListData();
 
-        //_view.showLoadingIndicator();
+        _view.showLoadingIndicator();
 
     }
 

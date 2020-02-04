@@ -1,7 +1,6 @@
 package com.taxtelecom.arinamurasheva.addressbook.Authenticator.Interactor;
 
 import com.taxtelecom.arinamurasheva.addressbook.Authenticator.SharedPreferencesManager;
-import com.taxtelecom.arinamurasheva.addressbook.IDataFetcher;
 import com.taxtelecom.arinamurasheva.addressbook.JsonDataFetcher;
 import com.taxtelecom.arinamurasheva.addressbook.UrlBuilder;
 

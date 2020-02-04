@@ -8,16 +8,18 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.taxtelecom.arinamurasheva.addressbook.Contact.Presenter.ContactPresenter;
+import com.taxtelecom.arinamurasheva.addressbook.Contact.Presenter.IContactPresenter;
 import com.taxtelecom.arinamurasheva.addressbook.Model.Person;
 import com.taxtelecom.arinamurasheva.addressbook.R;
 
 public class ContactActivity extends AppCompatActivity implements IContactView {
 
-    ContactPresenter presenter;
+    IContactPresenter presenter;
 
     private ImageView mContactPhoto;
 
@@ -29,6 +31,8 @@ public class ContactActivity extends AppCompatActivity implements IContactView {
 
     private TextView mContactPhone;
 
+    private ProgressBar mContactPhotoLoadingIndicator;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +43,8 @@ public class ContactActivity extends AppCompatActivity implements IContactView {
         }
 
         mContactPhoto = findViewById(R.id.iv_contact_photo);
+
+        mContactPhotoLoadingIndicator = findViewById(R.id.pb_photo_loading_indicator);
 
         mContactName = findViewById(R.id.tv_contact_name);
 
@@ -168,6 +174,26 @@ public class ContactActivity extends AppCompatActivity implements IContactView {
         presenter.onGetPhotoRequest(contactId);
     }
 
+    @Override
+    public void showPhotoLoadingIndicator() {
+        ContactActivity.this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mContactPhotoLoadingIndicator.setVisibility(View.VISIBLE);
+                mContactPhoto.setVisibility(View.INVISIBLE);
+            }
+        });
 
+    }
 
+    @Override
+    public void showContactPhoto() {
+        ContactActivity.this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mContactPhotoLoadingIndicator.setVisibility(View.INVISIBLE);
+                mContactPhoto.setVisibility(View.VISIBLE);
+            }
+        });
+    }
 }

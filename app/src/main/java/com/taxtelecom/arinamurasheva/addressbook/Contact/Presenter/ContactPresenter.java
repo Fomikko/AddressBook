@@ -5,7 +5,6 @@ import com.taxtelecom.arinamurasheva.addressbook.Contact.Interactor.IContactInte
 import com.taxtelecom.arinamurasheva.addressbook.Contact.View.ContactActivity;
 import com.taxtelecom.arinamurasheva.addressbook.Contact.View.IContactView;
 import com.taxtelecom.arinamurasheva.addressbook.Observer.IEventSubscriber;
-import com.taxtelecom.arinamurasheva.addressbook.UrlBuilder;
 
 public class ContactPresenter implements IContactPresenter, IEventSubscriber {
 
@@ -20,6 +19,7 @@ public class ContactPresenter implements IContactPresenter, IEventSubscriber {
     @Override
     public void updateSuccess(String eventType) {
         _view.setContactPhoto(_model.getContactPhoto());
+        _view.showContactPhoto();
     }
 
     @Override
@@ -29,6 +29,7 @@ public class ContactPresenter implements IContactPresenter, IEventSubscriber {
 
     @Override
     public void onGetPhotoRequest(String personId) {
+        _view.showPhotoLoadingIndicator();
         _model.events.subscribe(_model.CONTACT_PHOTO, this);
         _model.fetchContactPhoto(personId);
     }

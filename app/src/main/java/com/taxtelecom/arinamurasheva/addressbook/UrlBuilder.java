@@ -62,7 +62,6 @@ public class UrlBuilder {
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
-        System.out.println("in builder " + url.toString());
         return url.toString();
     }
 
@@ -73,7 +72,6 @@ public class UrlBuilder {
         String userPassword;
 
         while ((userLogin = manager.getUserLogin()).equals("") & (userPassword = manager.getUserPassword()).equals("")) {
-            System.out.println("нет сохраненных логина и пароля");
         }
 
         return buildUrl(path, userLogin, userPassword);

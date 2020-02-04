@@ -8,4 +8,6 @@ public interface IContactView {
     void onPhoneClicked(View view);
     void requestContactPhoto(String contactId);
     void setContactPhoto(Bitmap contactPhoto);
+    void showPhotoLoadingIndicator();
+    void showContactPhoto();
 }
