@@ -5,6 +5,7 @@ import com.taxtelecom.arinamurasheva.addressbook.Authenticator.SharedPreferences
 import com.taxtelecom.arinamurasheva.addressbook.Authenticator.Interactor.AuthenticatorInteractor;
 import com.taxtelecom.arinamurasheva.addressbook.Authenticator.View.AuthenticatorActivity;
 import com.taxtelecom.arinamurasheva.addressbook.Authenticator.View.IAuthenticatorView;
+import com.taxtelecom.arinamurasheva.addressbook.Observer.EventManager;
 import com.taxtelecom.arinamurasheva.addressbook.Observer.IEventSubscriber;
 
 public class AuthenticatorPresenter implements IAuthenticatorPresenter, IEventSubscriber {
@@ -34,7 +35,7 @@ public class AuthenticatorPresenter implements IAuthenticatorPresenter, IEventSu
 
     @Override
     public void onGetLogin(String userLogin, String userPassword) {
-        _model.events.subscribe(IAuthenticatorInteractor.AUTH, this);
+        _model.getEvents().subscribe(EventManager.AUTH, this);
         _model.confirmCredentials(userLogin, userPassword);
 
     }

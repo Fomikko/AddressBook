@@ -2,6 +2,7 @@ package com.taxtelecom.arinamurasheva.addressbook.Authenticator.Interactor;
 
 import com.taxtelecom.arinamurasheva.addressbook.Authenticator.SharedPreferencesManager;
 import com.taxtelecom.arinamurasheva.addressbook.JsonDataFetcher;
+import com.taxtelecom.arinamurasheva.addressbook.Observer.EventManager;
 import com.taxtelecom.arinamurasheva.addressbook.UrlBuilder;
 
 import org.json.JSONException;
@@ -14,6 +15,14 @@ import okhttp3.Response;
 public class AuthenticatorInteractor implements IAuthenticatorInteractor {
 
     private String errorMessage;
+
+    private String eventType = EventManager.AUTH;
+
+    private EventManager events;
+
+    public AuthenticatorInteractor() {
+        this.events = new EventManager(eventType);
+    }
 
     @Override
     public void confirmCredentials(final String userLogin, final String userPassword) {
@@ -39,11 +48,11 @@ public class AuthenticatorInteractor implements IAuthenticatorInteractor {
                         errorMessage = authJsonObject.getString(MESSAGE);
 
                         if (isValid) {
-                            events.notifySuccess(AUTH);
+                            events.notifySuccess(eventType);
                             SharedPreferencesManager.getInstance().saveUserData(userLogin, userPassword);
 
                         } else {
-                            events.notifyFail(AUTH);
+                            events.notifyFail(eventType);
                         }
 
                     } catch (IOException e) {
@@ -53,7 +62,7 @@ public class AuthenticatorInteractor implements IAuthenticatorInteractor {
                     }
                 } else {
                     errorMessage = "Отсутствует интернет-соединение.";
-                    events.notifyFail(AUTH);
+                    events.notifyFail(eventType);
 
                 }
             }
@@ -64,6 +73,11 @@ public class AuthenticatorInteractor implements IAuthenticatorInteractor {
     @Override
     public String getErrorMessage() {
         return errorMessage;
+    }
+
+    @Override
+    public EventManager getEvents() {
+        return events;
     }
 }
 

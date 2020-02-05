@@ -7,6 +7,7 @@ import com.google.gson.GsonBuilder;
 import com.taxtelecom.arinamurasheva.addressbook.JsonDataFetcher;
 import com.taxtelecom.arinamurasheva.addressbook.Model.Department;
 import com.taxtelecom.arinamurasheva.addressbook.Model.Person;
+import com.taxtelecom.arinamurasheva.addressbook.Observer.EventManager;
 import com.taxtelecom.arinamurasheva.addressbook.UrlBuilder;
 
 import java.io.IOException;
@@ -19,6 +20,16 @@ public class ContactListInteractor implements IContactListInteractor {
     private Department mContactListData;
 
     private String errorMessage;
+
+    private EventManager events;
+
+    private String eventType = EventManager.CONTACT_LIST;
+
+    public ContactListInteractor() {
+
+        this.events = new EventManager(eventType);
+
+    }
 
     @Override
     public Department getContactListData() {
@@ -54,11 +65,11 @@ public class ContactListInteractor implements IContactListInteractor {
                     }
 
                     mContactListData = getDeptFromJson(responseJsonString);
-                    events.notifySuccess(IContactListInteractor.CONTACT_LIST);
+                    events.notifySuccess(eventType);
 
                 } else {
                     errorMessage = "Отсутствует интернет-соединение.";
-                    events.notifyFail(IContactListInteractor.CONTACT_LIST);
+                    events.notifyFail(eventType);
                 }
             }
         }).start();
@@ -86,5 +97,10 @@ public class ContactListInteractor implements IContactListInteractor {
     @Override
     public String getErrorMessage() {
         return errorMessage;
+    }
+
+    @Override
+    public EventManager getEvents() {
+        return events;
     }
 }

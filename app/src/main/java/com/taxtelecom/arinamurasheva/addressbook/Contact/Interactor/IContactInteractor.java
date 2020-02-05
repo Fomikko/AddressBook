@@ -3,13 +3,11 @@ package com.taxtelecom.arinamurasheva.addressbook.Contact.Interactor;
 import android.graphics.Bitmap;
 
 import com.taxtelecom.arinamurasheva.addressbook.Observer.EventManager;
+import com.taxtelecom.arinamurasheva.addressbook.Observer.IPublisher;
 
-public interface IContactInteractor {
-
-    String CONTACT_PHOTO = "contact photo";
-
-    EventManager events = new EventManager(CONTACT_PHOTO);
+public interface IContactInteractor extends IPublisher {
 
     void fetchContactPhoto(String contactId);
     Bitmap getContactPhoto();
+
 }

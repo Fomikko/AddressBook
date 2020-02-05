@@ -7,8 +7,11 @@ import java.util.Map;
 
 public class EventManager {
 
-    //TODO проблема с утечкой
     private final Map<String, List<IEventSubscriber>> allSubscribers = new HashMap<>();
+
+    public final static String CONTACT_LIST = "contact list";
+    public final static String CONTACT_PHOTO = "contact photo";
+    public final static String AUTH = "auth";
 
     public EventManager(String... events) {
         for (String event : events) {

@@ -204,10 +204,6 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
 
     }
 
-    public boolean dataSetIsEmpty() {
-        return mContactList.isEmpty();
-    }
-
     private List<Integer> getRoutingList(int headerIndex) {
 
         List<Integer> routingList = new ArrayList<>(5);

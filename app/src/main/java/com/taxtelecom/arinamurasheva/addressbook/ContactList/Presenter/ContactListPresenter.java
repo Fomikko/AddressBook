@@ -7,6 +7,7 @@ import com.taxtelecom.arinamurasheva.addressbook.Model.Department;
 import com.taxtelecom.arinamurasheva.addressbook.ContactList.Interactor.IContactListInteractor;
 import com.taxtelecom.arinamurasheva.addressbook.ContactList.Interactor.ContactListInteractor;
 import com.taxtelecom.arinamurasheva.addressbook.Model.Person;
+import com.taxtelecom.arinamurasheva.addressbook.Observer.EventManager;
 import com.taxtelecom.arinamurasheva.addressbook.Observer.IEventSubscriber;
 import com.taxtelecom.arinamurasheva.addressbook.UrlBuilder;
 
@@ -28,19 +29,13 @@ public class ContactListPresenter implements IContactListPresenter, IEventSubscr
     @Override
     public void onGetDataLoadRequest() {
         _view.showLoadingIndicator();
-        _model.events.subscribe(_model.CONTACT_LIST, this);
+        _model.getEvents().subscribe(EventManager.CONTACT_LIST, this);
 
         _model.fetchContactListData();
     }
 
     @Override
     public void updateSuccess(String eventType) {
-
-        /*
-         * TODO Решить проблему при перезапуске. Вход-выход-вход -> ошибка
-         * _model.getContactListData() возвращает null.
-         * Похоже что это вызвано не пересозданием EventManager.
-         */
 
         Item deptItem = deptToItem(_model.getContactListData());
 

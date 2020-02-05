@@ -4,6 +4,7 @@ import com.taxtelecom.arinamurasheva.addressbook.Contact.Interactor.ContactInter
 import com.taxtelecom.arinamurasheva.addressbook.Contact.Interactor.IContactInteractor;
 import com.taxtelecom.arinamurasheva.addressbook.Contact.View.ContactActivity;
 import com.taxtelecom.arinamurasheva.addressbook.Contact.View.IContactView;
+import com.taxtelecom.arinamurasheva.addressbook.Observer.EventManager;
 import com.taxtelecom.arinamurasheva.addressbook.Observer.IEventSubscriber;
 
 public class ContactPresenter implements IContactPresenter, IEventSubscriber {
@@ -30,7 +31,7 @@ public class ContactPresenter implements IContactPresenter, IEventSubscriber {
     @Override
     public void onGetPhotoRequest(String personId) {
         _view.showPhotoLoadingIndicator();
-        _model.events.subscribe(_model.CONTACT_PHOTO, this);
+        _model.getEvents().subscribe(EventManager.CONTACT_PHOTO, this);
         _model.fetchContactPhoto(personId);
     }
 }

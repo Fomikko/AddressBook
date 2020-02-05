@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 import com.taxtelecom.arinamurasheva.addressbook.JsonDataFetcher;
+import com.taxtelecom.arinamurasheva.addressbook.Observer.EventManager;
 import com.taxtelecom.arinamurasheva.addressbook.UrlBuilder;
 
 import java.io.InputStream;
@@ -13,6 +14,14 @@ import okhttp3.Response;
 public class ContactInteractor implements IContactInteractor {
 
     private Bitmap mPersonPhoto;
+
+    private EventManager events;
+
+    private String eventType = EventManager.CONTACT_PHOTO;
+
+    public ContactInteractor() {
+        events = new EventManager(eventType);
+    }
 
     @Override
     public void fetchContactPhoto(String contactId) {
@@ -27,9 +36,9 @@ public class ContactInteractor implements IContactInteractor {
                 InputStream inputStream = response.body().byteStream();
                 mPersonPhoto = BitmapFactory.decodeStream(inputStream);
 
-                events.notifySuccess(IContactInteractor.CONTACT_PHOTO);
+                events.notifySuccess(eventType);
 
-                //events.notifyFail(IContactInteractor.CONTACT_PHOTO);
+                //events.notifyFail(eventType);
 
             }
         }).start();
@@ -40,4 +49,8 @@ public class ContactInteractor implements IContactInteractor {
         return mPersonPhoto;
     }
 
+    @Override
+    public EventManager getEvents() {
+        return events;
+    }
 }
