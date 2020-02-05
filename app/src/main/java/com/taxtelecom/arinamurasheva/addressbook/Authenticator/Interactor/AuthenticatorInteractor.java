@@ -26,26 +26,35 @@ public class AuthenticatorInteractor implements IAuthenticatorInteractor {
         new Thread(new Runnable() {
             @Override
             public void run() {
+
                 Response response = JsonDataFetcher.getInstance().fetchData(url);
-                try {
-                    String responseJsonString = response.body().string();
-                    JSONObject authJsonObject = new JSONObject(responseJsonString);
 
-                    boolean isValid = authJsonObject.getBoolean(SUCCESS);
-                    errorMessage = authJsonObject.getString(MESSAGE);
+                if (response != null) {
 
-                    if (isValid) {
-                        events.notifySuccess(AUTH);
-                        SharedPreferencesManager.getInstance().saveUserData(userLogin, userPassword);
+                    try {
+                        String responseJsonString = response.body().string();
+                        JSONObject authJsonObject = new JSONObject(responseJsonString);
 
-                    } else {
-                        events.notifyFail(AUTH);
+                        boolean isValid = authJsonObject.getBoolean(SUCCESS);
+                        errorMessage = authJsonObject.getString(MESSAGE);
+
+                        if (isValid) {
+                            events.notifySuccess(AUTH);
+                            SharedPreferencesManager.getInstance().saveUserData(userLogin, userPassword);
+
+                        } else {
+                            events.notifyFail(AUTH);
+                        }
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
+                } else {
+                    errorMessage = "Отсутствует интернет-соединение.";
+                    events.notifyFail(AUTH);
 
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
                 }
             }
         }).start();

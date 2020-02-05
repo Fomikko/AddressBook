@@ -19,7 +19,7 @@ import java.util.List;
 
 public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.AddressBookAdapterViewHolder> {
 
-    private final List<Item> mContactList = new ArrayList<>();
+    private List<Item> mContactList;
 
     private IContactListView listener;
 
@@ -199,10 +199,13 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
     /*Метод адаптирует список отделов для отображения на экране в виде раскрывающегося списка.*/
     void setContactListData(Item item) {
 
-        mContactList.addAll(item.getItems());
-
+        mContactList = item.getItems();
         notifyDataSetChanged();
 
+    }
+
+    public boolean dataSetIsEmpty() {
+        return mContactList.isEmpty();
     }
 
     private List<Integer> getRoutingList(int headerIndex) {

@@ -1,5 +1,7 @@
 package com.taxtelecom.arinamurasheva.addressbook.ContactList.Interactor;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.taxtelecom.arinamurasheva.addressbook.JsonDataFetcher;
@@ -16,9 +18,11 @@ public class ContactListInteractor implements IContactListInteractor {
 
     private Department mContactListData;
 
+    private String errorMessage;
+
     @Override
     public Department getContactListData() {
-        return this.mContactListData;
+        return mContactListData;
     }
 
     private Department getDeptFromJson(String deptJsonString) {
@@ -40,19 +44,21 @@ public class ContactListInteractor implements IContactListInteractor {
 
                 Response response = JsonDataFetcher.getInstance().fetchData(url);
 
-                String responseJsonString = null;
-                try {
-                    responseJsonString = response.body().string();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                if (response != null) {
 
-                if (responseJsonString != null) {
+                    String responseJsonString = null;
+                    try {
+                        responseJsonString = response.body().string();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
                     mContactListData = getDeptFromJson(responseJsonString);
                     events.notifySuccess(IContactListInteractor.CONTACT_LIST);
-                } else {
-                    events.notifyFail(IContactListInteractor.CONTACT_LIST);
 
+                } else {
+                    errorMessage = "Отсутствует интернет-соединение.";
+                    events.notifyFail(IContactListInteractor.CONTACT_LIST);
                 }
             }
         }).start();
@@ -77,4 +83,8 @@ public class ContactListInteractor implements IContactListInteractor {
 
     }
 
+    @Override
+    public String getErrorMessage() {
+        return errorMessage;
+    }
 }

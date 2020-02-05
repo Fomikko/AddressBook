@@ -15,5 +15,6 @@ public interface IContactListInteractor {
     Department getContactListData();
     void fetchContactListData();
     Person getContact(List<Integer> routingList);
+    String getErrorMessage();
 
 }

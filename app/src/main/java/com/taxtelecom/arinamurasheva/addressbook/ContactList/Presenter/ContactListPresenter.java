@@ -27,15 +27,20 @@ public class ContactListPresenter implements IContactListPresenter, IEventSubscr
 
     @Override
     public void onGetDataLoadRequest() {
-        _model.events.subscribe(_model.CONTACT_LIST, this);
-        _model.fetchContactListData();
-
         _view.showLoadingIndicator();
+        _model.events.subscribe(_model.CONTACT_LIST, this);
 
+        _model.fetchContactListData();
     }
 
     @Override
     public void updateSuccess(String eventType) {
+
+        /*
+         * TODO Решить проблему при перезапуске. Вход-выход-вход -> ошибка
+         * _model.getContactListData() возвращает null.
+         * Похоже что это вызвано не пересозданием EventManager.
+         */
 
         Item deptItem = deptToItem(_model.getContactListData());
 
@@ -46,7 +51,7 @@ public class ContactListPresenter implements IContactListPresenter, IEventSubscr
 
     @Override
     public void updateFail(String eventType) {
-        _view.showErrorMessage();
+        _view.showErrorMessage(_model.getErrorMessage());
     }
 
     @Override
@@ -66,7 +71,7 @@ public class ContactListPresenter implements IContactListPresenter, IEventSubscr
 
     }
 
-
+    //TODO Вынести в отдельный конвертер (адаптер)
     private static Item deptToItem(Department dept) {
         return deptToItem(dept, 0);
     }

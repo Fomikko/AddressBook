@@ -39,7 +39,6 @@ public class ContactListActivity extends AppCompatActivity implements IContactLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.contact_list_activity);
 
-
         if (presenter == null) {
             presenter = new ContactListPresenter(this);
         }
@@ -65,7 +64,9 @@ public class ContactListActivity extends AppCompatActivity implements IContactLi
 
         requestDataLoad();
 
+
    }
+
 
 
    /*
@@ -87,8 +88,19 @@ public class ContactListActivity extends AppCompatActivity implements IContactLi
 
     @Override
     public void showErrorMessage() {
-        mErrorMessageDisplay.setVisibility(View.VISIBLE);
-        mRecyclerView.setVisibility(View.INVISIBLE);
+        showErrorMessage(getString(R.string.error_message));
+    }
+
+    public void showErrorMessage(final String errorMessage) {
+        ContactListActivity.this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mErrorMessageDisplay.setText(errorMessage);
+                mLoadingIndicator.setVisibility(View.INVISIBLE);
+                mErrorMessageDisplay.setVisibility(View.VISIBLE);
+                mRecyclerView.setVisibility(View.INVISIBLE);
+            }
+        });
     }
 
     @Override

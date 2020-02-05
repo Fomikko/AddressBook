@@ -10,6 +10,7 @@ public interface IContactListView {
     void setContactListLayout(Item item);
     void showContactDataView();
     void showErrorMessage();
+    void showErrorMessage(String errorMessage);
     void showLoadingIndicator();
     void requestLogOut();
     void goToLoginView();

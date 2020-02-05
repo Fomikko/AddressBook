@@ -50,11 +50,11 @@ public class AuthenticatorActivity extends AppCompatActivity implements IAuthent
 
     @Override
     public void goToContactListView() {
-        Intent intent = new Intent(
+        Intent mContactListActivity = new Intent(
                 AuthenticatorActivity.this,
                 ContactListActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
+        mContactListActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(mContactListActivity);
     }
 
     @Override
