@@ -9,7 +9,6 @@ import com.taxtelecom.arinamurasheva.addressbook.ContactList.Interactor.ContactL
 import com.taxtelecom.arinamurasheva.addressbook.Model.Person;
 import com.taxtelecom.arinamurasheva.addressbook.Observer.EventManager;
 import com.taxtelecom.arinamurasheva.addressbook.Observer.IEventSubscriber;
-import com.taxtelecom.arinamurasheva.addressbook.UrlBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +28,7 @@ public class ContactListPresenter implements IContactListPresenter, IEventSubscr
     @Override
     public void onGetDataLoadRequest() {
         _view.showLoadingIndicator();
-        _model.getEvents().subscribe(EventManager.CONTACT_LIST, this);
+        _model.getEventManager().subscribe(EventManager.CONTACT_LIST, this);
 
         _model.fetchContactListData();
     }
@@ -45,8 +44,8 @@ public class ContactListPresenter implements IContactListPresenter, IEventSubscr
     }
 
     @Override
-    public void updateFail(String eventType) {
-        _view.showErrorMessage(_model.getErrorMessage());
+    public void updateFail(String eventType, String errorMessage) {
+        _view.showErrorMessage(errorMessage);
     }
 
     @Override

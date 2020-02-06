@@ -24,14 +24,14 @@ public class ContactPresenter implements IContactPresenter, IEventSubscriber {
     }
 
     @Override
-    public void updateFail(String eventType) {
+    public void updateFail(String eventType, String errorMessage) {
         //TODO Загрузить стандартную картинку.
     }
 
     @Override
     public void onGetPhotoRequest(String personId) {
         _view.showPhotoLoadingIndicator();
-        _model.getEvents().subscribe(EventManager.CONTACT_PHOTO, this);
+        _model.getEventManager().subscribe(EventManager.CONTACT_PHOTO, this);
         _model.fetchContactPhoto(personId);
     }
 }

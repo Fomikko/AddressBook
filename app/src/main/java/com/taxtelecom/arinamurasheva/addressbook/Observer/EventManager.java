@@ -48,12 +48,12 @@ public class EventManager {
         }
     }
 
-    public void notifyFail(String eventType) {
+    public void notifyFail(String eventType, String errorMessage) {
 
         synchronized (allSubscribers) {
             List<IEventSubscriber> concreteSubscribers = allSubscribers.get(eventType);
             for (IEventSubscriber subscriber : concreteSubscribers) {
-                subscriber.updateFail(eventType);
+                subscriber.updateFail(eventType, errorMessage);
 
             }
         }

@@ -1,26 +1,22 @@
 package com.taxtelecom.arinamurasheva.addressbook.Contact.Interactor;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 
-import com.taxtelecom.arinamurasheva.addressbook.JsonDataFetcher;
+import com.taxtelecom.arinamurasheva.addressbook.DataHandlers.IDataFetcher;
+import com.taxtelecom.arinamurasheva.addressbook.DataHandlers.JsonDataFetcher;
 import com.taxtelecom.arinamurasheva.addressbook.Observer.EventManager;
 import com.taxtelecom.arinamurasheva.addressbook.UrlBuilder;
-
-import java.io.InputStream;
-
-import okhttp3.Response;
 
 public class ContactInteractor implements IContactInteractor {
 
     private Bitmap mPersonPhoto;
 
-    private EventManager events;
+    private EventManager eventManager;
 
     private String eventType = EventManager.CONTACT_PHOTO;
 
     public ContactInteractor() {
-        events = new EventManager(eventType);
+        eventManager = new EventManager(eventType);
     }
 
     @Override
@@ -31,14 +27,10 @@ public class ContactInteractor implements IContactInteractor {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                Response response = JsonDataFetcher.getInstance().fetchData(url);
 
-                InputStream inputStream = response.body().byteStream();
-                mPersonPhoto = BitmapFactory.decodeStream(inputStream);
-
-                events.notifySuccess(eventType);
-
-                //events.notifyFail(eventType);
+                IDataFetcher dataFetcher = new JsonDataFetcher(url);
+                mPersonPhoto = dataFetcher.getContactPhoto();
+                eventManager.notifySuccess(eventType);
 
             }
         }).start();
@@ -50,7 +42,7 @@ public class ContactInteractor implements IContactInteractor {
     }
 
     @Override
-    public EventManager getEvents() {
-        return events;
+    public EventManager getEventManager() {
+        return eventManager;
     }
 }

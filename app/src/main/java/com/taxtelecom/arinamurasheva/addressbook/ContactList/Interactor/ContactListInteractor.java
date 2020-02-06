@@ -1,33 +1,25 @@
 package com.taxtelecom.arinamurasheva.addressbook.ContactList.Interactor;
 
-import android.util.Log;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.taxtelecom.arinamurasheva.addressbook.JsonDataFetcher;
+import com.taxtelecom.arinamurasheva.addressbook.DataHandlers.IDataFetcher;
+import com.taxtelecom.arinamurasheva.addressbook.DataHandlers.JsonDataFetcher;
 import com.taxtelecom.arinamurasheva.addressbook.Model.Department;
 import com.taxtelecom.arinamurasheva.addressbook.Model.Person;
 import com.taxtelecom.arinamurasheva.addressbook.Observer.EventManager;
 import com.taxtelecom.arinamurasheva.addressbook.UrlBuilder;
 
-import java.io.IOException;
 import java.util.List;
-
-import okhttp3.Response;
 
 public class ContactListInteractor implements IContactListInteractor {
 
     private Department mContactListData;
 
-    private String errorMessage;
-
-    private EventManager events;
+    private EventManager eventManager;
 
     private String eventType = EventManager.CONTACT_LIST;
 
     public ContactListInteractor() {
 
-        this.events = new EventManager(eventType);
+        this.eventManager = new EventManager(eventType);
 
     }
 
@@ -36,13 +28,6 @@ public class ContactListInteractor implements IContactListInteractor {
         return mContactListData;
     }
 
-    private Department getDeptFromJson(String deptJsonString) {
-
-        GsonBuilder gsonBuilder = new GsonBuilder();
-        Gson gson = gsonBuilder.create();
-
-        return gson.fromJson(deptJsonString, Department.class);
-    }
 
     @Override
     public void fetchContactListData() {
@@ -53,23 +38,16 @@ public class ContactListInteractor implements IContactListInteractor {
             @Override
             public void run() {
 
-                Response response = JsonDataFetcher.getInstance().fetchData(url);
+                IDataFetcher dataFetcher = new JsonDataFetcher(url);
 
-                if (response != null) {
+                Department dept = dataFetcher.getDepartment();
+                if (dept != null) {
 
-                    String responseJsonString = null;
-                    try {
-                        responseJsonString = response.body().string();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
-                    mContactListData = getDeptFromJson(responseJsonString);
-                    events.notifySuccess(eventType);
+                    mContactListData = dept;
+                    eventManager.notifySuccess(eventType);
 
                 } else {
-                    errorMessage = "Отсутствует интернет-соединение.";
-                    events.notifyFail(eventType);
+                    eventManager.notifyFail(eventType, dataFetcher.getErrorMessage());
                 }
             }
         }).start();
@@ -95,12 +73,7 @@ public class ContactListInteractor implements IContactListInteractor {
     }
 
     @Override
-    public String getErrorMessage() {
-        return errorMessage;
-    }
-
-    @Override
-    public EventManager getEvents() {
-        return events;
+    public EventManager getEventManager() {
+        return eventManager;
     }
 }

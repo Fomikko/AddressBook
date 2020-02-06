@@ -35,7 +35,7 @@ public class AuthenticatorPresenter implements IAuthenticatorPresenter, IEventSu
 
     @Override
     public void onGetLogin(String userLogin, String userPassword) {
-        _model.getEvents().subscribe(EventManager.AUTH, this);
+        _model.getEventManager().subscribe(EventManager.AUTH, this);
         _model.confirmCredentials(userLogin, userPassword);
 
     }
@@ -46,8 +46,8 @@ public class AuthenticatorPresenter implements IAuthenticatorPresenter, IEventSu
     }
 
     @Override
-    public void updateFail(String eventType) {
-        _view.showErrorMessage(_model.getErrorMessage());
+    public void updateFail(String eventType, String errorMessage) {
+        _view.showErrorMessage(errorMessage);
     }
 
 }

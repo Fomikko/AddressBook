@@ -1,27 +1,19 @@
 package com.taxtelecom.arinamurasheva.addressbook.Authenticator.Interactor;
 
 import com.taxtelecom.arinamurasheva.addressbook.Authenticator.SharedPreferencesManager;
-import com.taxtelecom.arinamurasheva.addressbook.JsonDataFetcher;
+import com.taxtelecom.arinamurasheva.addressbook.DataHandlers.IDataFetcher;
+import com.taxtelecom.arinamurasheva.addressbook.DataHandlers.JsonDataFetcher;
 import com.taxtelecom.arinamurasheva.addressbook.Observer.EventManager;
 import com.taxtelecom.arinamurasheva.addressbook.UrlBuilder;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-
-import okhttp3.Response;
-
 public class AuthenticatorInteractor implements IAuthenticatorInteractor {
-
-    private String errorMessage;
 
     private String eventType = EventManager.AUTH;
 
-    private EventManager events;
+    private EventManager eventManager;
 
     public AuthenticatorInteractor() {
-        this.events = new EventManager(eventType);
+        this.eventManager = new EventManager(eventType);
     }
 
     @Override
@@ -29,40 +21,20 @@ public class AuthenticatorInteractor implements IAuthenticatorInteractor {
 
         final String url = UrlBuilder.buildAuthUrl(userLogin, userPassword);
 
-        final String MESSAGE = "Message";
-        final String SUCCESS = "Success";
-
         new Thread(new Runnable() {
             @Override
             public void run() {
 
-                Response response = JsonDataFetcher.getInstance().fetchData(url);
+                IDataFetcher dataFetcher = new JsonDataFetcher(url);
+                boolean isValid = dataFetcher.confirmCredentials();
 
-                if (response != null) {
+                if (isValid) {
 
-                    try {
-                        String responseJsonString = response.body().string();
-                        JSONObject authJsonObject = new JSONObject(responseJsonString);
+                    eventManager.notifySuccess(eventType);
+                    SharedPreferencesManager.getInstance().saveUserData(userLogin, userPassword);
 
-                        boolean isValid = authJsonObject.getBoolean(SUCCESS);
-                        errorMessage = authJsonObject.getString(MESSAGE);
-
-                        if (isValid) {
-                            events.notifySuccess(eventType);
-                            SharedPreferencesManager.getInstance().saveUserData(userLogin, userPassword);
-
-                        } else {
-                            events.notifyFail(eventType);
-                        }
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
                 } else {
-                    errorMessage = "Отсутствует интернет-соединение.";
-                    events.notifyFail(eventType);
+                    eventManager.notifyFail(eventType, dataFetcher.getErrorMessage());
 
                 }
             }
@@ -71,13 +43,8 @@ public class AuthenticatorInteractor implements IAuthenticatorInteractor {
     }
 
     @Override
-    public String getErrorMessage() {
-        return errorMessage;
-    }
-
-    @Override
-    public EventManager getEvents() {
-        return events;
+    public EventManager getEventManager() {
+        return eventManager;
     }
 }
 
