@@ -1,7 +1,8 @@
 package com.taxtelecom.arinamurasheva.addressbook.ContactList.Interactor;
 
 import com.taxtelecom.arinamurasheva.addressbook.DataHandlers.IDataFetcher;
-import com.taxtelecom.arinamurasheva.addressbook.DataHandlers.JsonDataFetcher;
+import com.taxtelecom.arinamurasheva.addressbook.DataHandlers.JSONDataFetcher;
+import com.taxtelecom.arinamurasheva.addressbook.DataHandlers.SQLiteDataHandler;
 import com.taxtelecom.arinamurasheva.addressbook.Model.Department;
 import com.taxtelecom.arinamurasheva.addressbook.Model.Person;
 import com.taxtelecom.arinamurasheva.addressbook.Observer.EventManager;
@@ -17,9 +18,13 @@ public class ContactListInteractor implements IContactListInteractor {
 
     private String eventType = EventManager.CONTACT_LIST;
 
+    private SQLiteDataHandler dataHandler;
+
     public ContactListInteractor() {
 
         this.eventManager = new EventManager(eventType);
+
+        this.dataHandler = new SQLiteDataHandler();
 
     }
 
@@ -32,26 +37,62 @@ public class ContactListInteractor implements IContactListInteractor {
     @Override
     public void fetchContactListData() {
 
-        final String url = UrlBuilder.buildContactListUrl();
-
         new Thread(new Runnable() {
             @Override
             public void run() {
 
-                IDataFetcher dataFetcher = new JsonDataFetcher(url);
+                fetchFromDB();
 
-                Department dept = dataFetcher.getDepartment();
-                if (dept != null) {
+                if (mContactListData == null) {
+                    fetchFromJson();
 
-                    mContactListData = dept;
-                    eventManager.notifySuccess(eventType);
+                    if (mContactListData != null) {
+                        saveToDB(mContactListData);
+                    }
 
-                } else {
-                    eventManager.notifyFail(eventType, dataFetcher.getErrorMessage());
                 }
+
             }
         }).start();
+
+
     }
+
+    private void fetchFromDB() {
+
+        Department dept = dataHandler.getDepartment();
+
+        if (dept != null) {
+            mContactListData = dept;
+            eventManager.notifySuccess(eventType);
+        } else {
+            eventManager.notifyFail(eventType, dataHandler.getErrorMessage());
+        }
+
+    }
+
+
+    private void fetchFromJson() {
+
+        final String url = UrlBuilder.buildContactListUrl();
+
+        IDataFetcher dataFetcher = new JSONDataFetcher(url);
+
+        Department dept = dataFetcher.getDepartment();
+
+        if (dept != null) {
+            mContactListData = dept;
+            eventManager.notifySuccess(eventType);
+        } else {
+            eventManager.notifyFail(eventType,dataFetcher.getErrorMessage());
+        }
+
+    }
+
+    private void saveToDB(Department dept) {
+        dataHandler.postDepartment(dept);
+    }
+
 
     /*Метод с помощью routingList позволяет найти заданного в обходном листе человека.*/
     @Override

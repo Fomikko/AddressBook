@@ -16,10 +16,10 @@ public class Department implements Serializable {
     private String name;
 
     @SerializedName("Departments")
-    private List<Department> mDepartments;
+    private List<Department> mDepartments = null;
 
     @SerializedName("Employees")
-    private List<Person> mEmployees;
+    private List<Person> mEmployees = null;
 
     public Department(String id, String name) {
         this.id = id;

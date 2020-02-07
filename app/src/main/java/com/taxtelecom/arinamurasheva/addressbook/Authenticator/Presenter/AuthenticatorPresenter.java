@@ -21,6 +21,8 @@ public class AuthenticatorPresenter implements IAuthenticatorPresenter, IEventSu
 
     @Override
     public void onGetCheckUserDataPresence() {
+
+        //TODO добавить верификацию существующих логина и пароля по сети
         SharedPreferencesManager manager = SharedPreferencesManager.getInstance();
 
         String userLogin = manager.getUserLogin();
@@ -30,8 +32,6 @@ public class AuthenticatorPresenter implements IAuthenticatorPresenter, IEventSu
            _view.goToContactListView();
         }
     }
-
-
 
     @Override
     public void onGetLogin(String userLogin, String userPassword) {

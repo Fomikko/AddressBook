@@ -3,7 +3,7 @@ package com.taxtelecom.arinamurasheva.addressbook.Contact.Interactor;
 import android.graphics.Bitmap;
 
 import com.taxtelecom.arinamurasheva.addressbook.DataHandlers.IDataFetcher;
-import com.taxtelecom.arinamurasheva.addressbook.DataHandlers.JsonDataFetcher;
+import com.taxtelecom.arinamurasheva.addressbook.DataHandlers.JSONDataFetcher;
 import com.taxtelecom.arinamurasheva.addressbook.Observer.EventManager;
 import com.taxtelecom.arinamurasheva.addressbook.UrlBuilder;
 
@@ -28,7 +28,7 @@ public class ContactInteractor implements IContactInteractor {
             @Override
             public void run() {
 
-                IDataFetcher dataFetcher = new JsonDataFetcher(url);
+                IDataFetcher dataFetcher = new JSONDataFetcher(url);
                 mPersonPhoto = dataFetcher.getContactPhoto();
                 eventManager.notifySuccess(eventType);
 

@@ -199,7 +199,13 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
     /*Метод адаптирует список отделов для отображения на экране в виде раскрывающегося списка.*/
     void setContactListData(Item item) {
 
-        mContactList = item.getItems();
+        //TODO изменить этот метод
+
+        List<Item> itemsList = new ArrayList<>();
+        itemsList.add(item);
+
+        mContactList = itemsList;
+        //mContactList = item.getItems();
         notifyDataSetChanged();
 
     }

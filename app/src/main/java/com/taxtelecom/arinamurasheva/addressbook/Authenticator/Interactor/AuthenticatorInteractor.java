@@ -1,8 +1,8 @@
 package com.taxtelecom.arinamurasheva.addressbook.Authenticator.Interactor;
 
 import com.taxtelecom.arinamurasheva.addressbook.Authenticator.SharedPreferencesManager;
-import com.taxtelecom.arinamurasheva.addressbook.DataHandlers.IDataFetcher;
-import com.taxtelecom.arinamurasheva.addressbook.DataHandlers.JsonDataFetcher;
+import com.taxtelecom.arinamurasheva.addressbook.DataHandlers.IAuthenticator;
+import com.taxtelecom.arinamurasheva.addressbook.DataHandlers.JSONDataFetcher;
 import com.taxtelecom.arinamurasheva.addressbook.Observer.EventManager;
 import com.taxtelecom.arinamurasheva.addressbook.UrlBuilder;
 
@@ -25,8 +25,8 @@ public class AuthenticatorInteractor implements IAuthenticatorInteractor {
             @Override
             public void run() {
 
-                IDataFetcher dataFetcher = new JsonDataFetcher(url);
-                boolean isValid = dataFetcher.confirmCredentials();
+                IAuthenticator authenticator = new JSONDataFetcher(url);
+                boolean isValid = authenticator.confirmCredentials();
 
                 if (isValid) {
 
@@ -34,7 +34,7 @@ public class AuthenticatorInteractor implements IAuthenticatorInteractor {
                     SharedPreferencesManager.getInstance().saveUserData(userLogin, userPassword);
 
                 } else {
-                    eventManager.notifyFail(eventType, dataFetcher.getErrorMessage());
+                    eventManager.notifyFail(eventType, authenticator.getErrorMessage());
 
                 }
             }

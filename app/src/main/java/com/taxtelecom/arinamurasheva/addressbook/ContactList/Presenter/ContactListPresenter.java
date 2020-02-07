@@ -27,6 +27,7 @@ public class ContactListPresenter implements IContactListPresenter, IEventSubscr
 
     @Override
     public void onGetDataLoadRequest() {
+
         _view.showLoadingIndicator();
         _model.getEventManager().subscribe(EventManager.CONTACT_LIST, this);
 

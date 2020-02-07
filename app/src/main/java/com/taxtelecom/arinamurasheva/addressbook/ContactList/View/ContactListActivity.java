@@ -1,10 +1,5 @@
 package com.taxtelecom.arinamurasheva.addressbook.ContactList.View;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -13,10 +8,15 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.taxtelecom.arinamurasheva.addressbook.Authenticator.View.AuthenticatorActivity;
 import com.taxtelecom.arinamurasheva.addressbook.Contact.View.ContactActivity;
-import com.taxtelecom.arinamurasheva.addressbook.ContactList.Presenter.IContactListPresenter;
 import com.taxtelecom.arinamurasheva.addressbook.ContactList.Presenter.ContactListPresenter;
+import com.taxtelecom.arinamurasheva.addressbook.ContactList.Presenter.IContactListPresenter;
 import com.taxtelecom.arinamurasheva.addressbook.Model.Person;
 import com.taxtelecom.arinamurasheva.addressbook.R;
 
@@ -75,8 +75,14 @@ public class ContactListActivity extends AppCompatActivity implements IContactLi
 
     @Override
     public void showContactDataView() {
-        mLoadingIndicator.setVisibility(View.INVISIBLE);
-        mRecyclerView.setVisibility(View.VISIBLE);
+        ContactListActivity.this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mErrorMessageDisplay.setVisibility(View.INVISIBLE);
+                mLoadingIndicator.setVisibility(View.INVISIBLE);
+                mRecyclerView.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
     @Override

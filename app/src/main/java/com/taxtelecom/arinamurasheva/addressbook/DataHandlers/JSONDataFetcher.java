@@ -6,7 +6,6 @@ import android.graphics.BitmapFactory;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.taxtelecom.arinamurasheva.addressbook.Model.Department;
-import com.taxtelecom.arinamurasheva.addressbook.Model.Person;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -18,13 +17,13 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class JsonDataFetcher implements IDataFetcher {
+public class JSONDataFetcher implements IAuthenticator {
 
     private String url;
 
-    private String errorMessage;
+    private String errorMessage = "Ошибка сети.";
 
-    public JsonDataFetcher(String url) {
+    public JSONDataFetcher(String url) {
         this.url = url;
     }
 
@@ -45,7 +44,6 @@ public class JsonDataFetcher implements IDataFetcher {
             }
 
         } catch (IOException e) {
-            errorMessage = "Ошибка сети.";
             e.printStackTrace();
         }
 
@@ -100,11 +98,6 @@ public class JsonDataFetcher implements IDataFetcher {
     }
 
     @Override
-    public Person getPerson() {
-        return null;
-    }
-
-    @Override
     public boolean confirmCredentials() {
 
         Response response = fetchData();
@@ -127,8 +120,6 @@ public class JsonDataFetcher implements IDataFetcher {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        } else {
-            errorMessage = "Ошибка сети.";
         }
 
         return isValid;
